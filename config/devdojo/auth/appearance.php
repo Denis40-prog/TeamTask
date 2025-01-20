@@ -1,0 +1,60 @@
+<?php
+
+/*
+ * Branding configs for your application
+ */
+
+return [
+    'logo' => [
+        'type' => 'svg',
+        'image_src' => '',
+        'svg_string' => '<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="337.000000pt" height="261.000000pt" viewBox="0 0 337.000000 261.000000"
+ preserveAspectRatio="xMidYMid meet">
+
+<g transform="translate(0.000000,261.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M1810 2010 l0 -291 208 -230 c223 -248 248 -286 239 -366 -11 -100
+-84 -173 -181 -181 -75 -6 -127 21 -200 103 -47 53 -61 64 -72 54 -8 -6 -14
+-15 -14 -19 0 -7 169 -200 235 -269 l23 -24 259 234 c142 129 355 322 473 429
+118 106 216 196 218 200 1 4 -48 62 -109 131 -161 180 -146 166 -166 147 -15
+-16 -12 -21 39 -76 66 -72 88 -115 88 -175 0 -58 -11 -86 -51 -131 -42 -48
+-80 -67 -137 -68 -106 -3 -96 -12 -726 690 -65 72 -120 132 -122 132 -2 0 -4
+-131 -4 -290z"/>
+<path d="M1184 1742 c-83 -75 -294 -267 -470 -426 -175 -159 -320 -292 -322
+-296 -3 -9 247 -290 258 -290 4 0 12 6 18 13 9 10 -2 28 -44 76 -59 68 -78
+100 -87 147 -14 72 37 170 106 205 49 25 133 27 182 3 25 -11 151 -144 391
+-410 195 -217 357 -394 359 -394 3 0 5 130 5 289 l0 290 -206 228 c-114 125
+-215 246 -225 268 -58 125 27 271 164 283 71 6 123 -21 201 -105 53 -57 61
+-62 75 -49 13 14 13 18 -5 38 -115 129 -238 263 -243 265 -3 1 -74 -60 -157
+-135z"/>
+</g>
+</svg>
+',
+        'height' => '32',
+    ],
+    'background' => [
+        'color' => '#111827',
+        'image' => '',
+        'image_overlay_color' => '#4ebcf4',
+        'image_overlay_opacity' => '0.5',
+    ],
+    'color' => [
+        'text' => '#1432af',
+        'button' => '#1432af',
+        'button_text' => '#ffffff',
+        'input_text' => '#1432af',
+        'input_border' => '#1432af',
+    ],
+    'alignment' => [
+        'heading' => 'center',
+        'container' => 'center',
+    ],
+    'favicon' => [
+        'light' => '/storage/auth/favicon.ico',
+        'dark' => '/storage/auth/favicon-dark.ico',
+    ],
+];

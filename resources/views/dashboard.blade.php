@@ -1,17 +1,44 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+@endpush
+
+@section('content')
+<div class="container mx-auto p-4 flex justify-center items-start min-h-screen">
+    <div class="w-full max-w-4xl">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-400">Bienvenue, {{ auth()->user()->name }}</h1>
+
+        <!-- Ligne contenant les deux sections -->
+        <div class="flex w-full justify-between space-x-8">
+            <!-- Colonne "Vos Équipes" -->
+            <div class="flex-1 bg-gray-800 p-4 rounded shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-400">Vos Équipes</h2>
+                @if($teams->isEmpty())
+                    <p class="text-gray-500">Vous n'êtes membre d'aucune équipe.</p>
+                @else
+                    <ul class="list-disc pl-5 text-gray-500">
+                        @foreach($teams as $team)
+                            <li class="mb-1">{{ $team->name }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+
+            <!-- Colonne "Vos Projets" -->
+            <div class="flex-1 bg-gray-800 p-4 rounded shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-400">Vos Projets</h2>
+                @if($projects->isEmpty())
+                    <p class="text-gray-500">Vous n'avez pas encore de projets.</p>
+                @else
+                    <ul class="list-disc pl-5 text-gray-500">
+                        @foreach($projects as $project)
+                            <li class="mb-1"><a href="project/{{$project->id}}">{{ $project->name }}</a></li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection
