@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,12 +19,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return redirect()->route('auth.login');
+})->middleware('guest');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/project/{project}', [ProjectController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('project.show');
+
+Route::get('/task/{task}/edit', [TaskController::class, 'edit'])
+    ->middleware(['auth', 'verified'])
+    ->name('task.edit');
+Route::get('/task/{task}/destroy', [TaskController::class, 'destroy'])
+    ->middleware(['auth', 'verified'])
+    ->name('task.destroy');
+Route::get('/task', [TaskController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('task.store');
+
+Route::get('/comment', [CommentController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('comment.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
