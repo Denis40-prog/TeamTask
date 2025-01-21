@@ -36,11 +36,14 @@ Route::get('/task/{task}/edit', [TaskController::class, 'edit'])
 Route::get('/task/{task}/destroy', [TaskController::class, 'destroy'])
     ->middleware(['auth', 'verified'])
     ->name('task.destroy');
-Route::get('/task', [TaskController::class, 'store'])
-    ->middleware(['auth', 'verified'])
+// Route::post('/task', [TaskController::class, 'store'])
+//     ->middleware(['auth', 'verified'])
+//     ->name('task.store');
+Route::post('/task', [TaskController::class, 'store'])
     ->name('task.store');
 
-Route::get('/comment', [CommentController::class, 'store'])
+
+Route::post('/comment', [CommentController::class, 'store'])
     ->middleware(['auth', 'verified'])
     ->name('comment.store');
 

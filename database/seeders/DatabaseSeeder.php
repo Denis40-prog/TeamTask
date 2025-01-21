@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Comment::factory()->create([
             'content' => 'Comment content',
             'task_id' => 1,
+            'project_id' => 1,
             'user_id' => 1,
         ]);
         \App\Models\Notification::factory()->create([

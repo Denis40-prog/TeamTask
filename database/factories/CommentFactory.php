@@ -20,6 +20,7 @@ class CommentFactory extends Factory
         return [
             'content' => fake()->sentence(),
             'task_id' => 1,
+            'project_id' => 1,
             'user_id' => 1,
         ];
     }
