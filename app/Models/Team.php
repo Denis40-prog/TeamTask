@@ -12,7 +12,7 @@ class Team extends Model
         return $this->hasMany(Project::class);
     }
 
-    public function users()
+    public function Users()
     {
         return $this->belongsToMany(User::class, 'team_users');
     }

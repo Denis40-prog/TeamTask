@@ -7,6 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class TeamUser extends Model
 {
-
     use HasFactory;
 }

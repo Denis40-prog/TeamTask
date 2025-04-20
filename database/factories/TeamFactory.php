@@ -18,6 +18,7 @@ class TeamFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'leader_id' => \App\Models\User::factory()->create()->id,
         ];
     }
 }

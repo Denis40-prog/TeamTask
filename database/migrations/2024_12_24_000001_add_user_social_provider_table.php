@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('social_provider_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('provider_slug'); // maps to providers slug in the devdojo.auth.providers
+            // $table->string('provider_slug'); // maps to providers slug in the devdojo.auth.providers
 
             $table->string('provider_user_id');
             $table->string('nickname')->nullable();

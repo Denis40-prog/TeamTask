@@ -21,11 +21,11 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\Team::factory()->create([
             'name' => 'Team-1',
+            'leader_id' => 1,
         ]);
         \App\Models\TeamUser::factory()->create([
             'team_id' => 1,
             'user_id' => 1,
-            'role_in_team' => 'Admin',
         ]);
         \App\Models\Project::factory()->create([
             'name' => 'Project-1',

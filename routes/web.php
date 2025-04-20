@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TeamController;
+use App\Livewire\TeamShow;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +28,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Route::get('/team/{id}', [TeamController::class, 'show'])
+//     ->middleware(['auth', 'verified'])
+//     ->name('team.show');
+Route::get('/team/{id}', [TeamShow::class])
+    ->middleware(['auth', 'verified'])
+    ->name('team.show');
+
 Route::get('/project/{project}', [ProjectController::class, 'show'])
     ->middleware(['auth', 'verified'])
     ->name('project.show');
@@ -36,12 +45,9 @@ Route::get('/task/{task}/edit', [TaskController::class, 'edit'])
 Route::get('/task/{task}/destroy', [TaskController::class, 'destroy'])
     ->middleware(['auth', 'verified'])
     ->name('task.destroy');
-// Route::post('/task', [TaskController::class, 'store'])
-//     ->middleware(['auth', 'verified'])
-//     ->name('task.store');
-Route::post('/task', [TaskController::class, 'store'])
-    ->name('task.store');
-
+ Route::post('/task', [TaskController::class, 'store'])
+     ->middleware(['auth', 'verified'])
+     ->name('task.store');
 
 Route::post('/comment', [CommentController::class, 'store'])
     ->middleware(['auth', 'verified'])

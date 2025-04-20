@@ -16,9 +16,6 @@ class ProjectController extends Controller
         // Récupérer les utilisateurs de l'équipe liée au projet
         $teamUsers = $project->team->users;
 
-        $comments = $project->comments()->with('user')->get();
-
-        return view('project', compact('project', 'teamUsers', 'comments'));
+        return view('project', compact('project', 'teamUsers'));
     }
-
 }

@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function () {
                 ->name('register.store');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+                ->name('login.create');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
                 ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify');
+                ->name('verification.verify.create');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
                 ->middleware('throttle:6,1')
@@ -56,5 +56,5 @@ Route::middleware('auth')->group(function () {
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+                ->name('logout.destroy');
 });
