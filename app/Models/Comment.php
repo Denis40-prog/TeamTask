@@ -18,4 +18,16 @@ class Comment extends Model
     }
 
     use HasFactory;
+
+    /**
+     * Les attributs qui peuvent être remplis via mass assignment.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'content',
+        'task_id',
+        'project_id',
+        'user_id',
+    ];
 }

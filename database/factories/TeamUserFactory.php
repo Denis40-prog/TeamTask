@@ -19,7 +19,6 @@ class TeamUserFactory extends Factory
         return [
             'team_id' => \App\Models\Team::factory()->create()->id,
             'user_id' => \App\Models\User::factory()->create()->id,
-            'role_in_team' => $this->faker->randomElement(['Admin', 'Membre']),
         ];
     }
 }

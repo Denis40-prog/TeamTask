@@ -28,4 +28,19 @@ class Task extends Model
     }
 
     use HasFactory;
+
+    /**
+     * Les attributs qui peuvent être remplis via mass assignment.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'status',
+        'priority',
+        'due_date',
+        'project_id',
+        'assignee_id',
+    ];
 }

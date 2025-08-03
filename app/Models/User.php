@@ -21,11 +21,10 @@ class User extends AuthUser
         return $this->hasMany(Task::class, 'assignee_id');
     }
 
-    public function teams()
+    public function Teams()
     {
         return $this->belongsToMany(Team::class, 'team_users');
     }
-
 
     public function notifications()
     {

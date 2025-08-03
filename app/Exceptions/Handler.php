@@ -27,4 +27,22 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        // Exemple pour gérer les redirections d'authentification
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        // Laisser Laravel gérer les autres exceptions
+        return parent::render($request, $exception);
+    }
 }
