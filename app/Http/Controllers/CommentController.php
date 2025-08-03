@@ -3,32 +3,62 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Comment;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class CommentController extends Controller
 {
-    public function store(Request $request) {
-        $data = Validator::make($request->all(), [
-            'content' => ['required'],
-            'project_id' => ['required', 'exists:projects,id'],
-            'task_id' => ['nullable', 'exists:tasks,id'],
-            'user_id' => ['required', 'exists:users,id'],
-        ]);
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
 
-        if ($data->fails()) {
-            throw ValidationException::withMessages($data->errors()->toArray());
-        }
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
 
-        // Création de la tâche
-        $content = Comment::insert([
-            'content' => $request->content,
-            'project_id' => $request->project_id,
-            'task_id' => $request->task_id,
-            'user_id' => $request->user_id,
-        ]);
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
 
-        return redirect()->route('project.show', ['project' => $request->project_id])->with('success', 'Comment added successfully');
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Schema\ForeignKeyDefinition;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -18,10 +17,11 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'content' => fake()->sentence(),
-            'task_id' => 1,
-            'project_id' => 1,
-            'user_id' => 1,
+            'content' => $this->faker->paragraph(),
+            'task_id' => \App\Models\Task::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

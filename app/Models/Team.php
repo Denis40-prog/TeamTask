@@ -7,15 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
+    use HasFactory;
+
+    protected $fillable = ['name', 'owner_id'];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
     public function projects()
     {
         return $this->hasMany(Project::class);
     }
 
-    public function Users()
+    public function getHexagonRouteAttribute()
     {
-        return $this->belongsToMany(User::class, 'team_users');
-    }
+        $projectCount = $this->projects()->count();
 
-    use HasFactory;
+        if ($projectCount === 1) {
+            return route('projects.show', $this->projects()->first());
+        }
+
+        return route('livewire.projects', ['teamId' => $this->id]);
+    }
 }

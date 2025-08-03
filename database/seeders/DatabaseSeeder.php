@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,51 +13,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory()->create([
-            'name' => 'Moi',
-            'email' => 'denis.chevanne@hotmail.fr',
-            'password' => Hash::make('testtest'),
-            'role' => 'admin',
-        ]);
-        \App\Models\Team::factory()->create([
-            'name' => 'Team-1',
-            'leader_id' => 1,
-        ]);
-        \App\Models\TeamUser::factory()->create([
-            'team_id' => 1,
-            'user_id' => 1,
-        ]);
-        \App\Models\Project::factory()->create([
-            'name' => 'Project-1',
-            'description' => 'description project 1',
-            'owner_id'=> 1,
-        ]);
-        \App\Models\Task::factory()->create([
-            'title' => 'Task-1',
-            'project_id' => 1,
-            'assignee_id' => 1,
-        ]);
-        \App\Models\Comment::factory()->create([
-            'content' => 'Comment content',
-            'task_id' => 1,
-            'project_id' => 1,
-            'user_id' => 1,
-        ]);
-        \App\Models\Notification::factory()->create([
-            'content' => 'Notification content',
-            'type' => 'type ?',
-            'user_id' => 1,
+        $this->call([
+            UserSeeder::class,
+            TeamSeeder::class,
+            TeamUserSeeder::class,
+            ProjectSeeder::class,
+            TaskSeeder::class,
+            CommentSeeder::class,
+            BadgeSeeder::class,
+            UserBadgeSeeder::class,
+            UserXpSeeder::class,
+            NotificationSeeder::class,
+            ChallengeSeeder::class,
+            ChallengeParticipantSeeder::class,
+            WellnessSurveySeeder::class,
         ]);
 
-
-
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\Comment::factory(10)->create();
-        // \App\Models\Notification::factory(10)->create();
-        // \App\Models\Project::factory(10)->create();
-        // \App\Models\Task::factory(10)->create();
-        // \App\Models\Team::factory(10)->create();
-
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }

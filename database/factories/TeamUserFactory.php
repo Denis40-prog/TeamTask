@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TeamUser>
  */
 class TeamUserFactory extends Factory
 {
@@ -17,8 +17,11 @@ class TeamUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'team_id' => \App\Models\Team::factory()->create()->id,
-            'user_id' => \App\Models\User::factory()->create()->id,
+            'user_id' => \App\Models\User::factory(),
+            'team_id' => \App\Models\Team::factory(),
+            'role' => $this->faker->randomElement(['member', 'admin']),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

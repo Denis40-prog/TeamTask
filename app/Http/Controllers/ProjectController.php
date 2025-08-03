@@ -2,20 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Project;
-use App\Models\TeamUser;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function show(Project $project)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        // Charger les relations nécessaires
-        $project->load('team', 'team.users', 'tasks');
+        $projects = Project::query();
 
-        // Récupérer les utilisateurs de l'équipe liée au projet
-        $teamUsers = $project->team->users;
+        if ($request->has('team')) {
+            $projects->where('team_id', $request->team);
+        }
 
-        return view('project', compact('project', 'teamUsers'));
+        return view('projects.index', ['projects' => $projects->get()]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
