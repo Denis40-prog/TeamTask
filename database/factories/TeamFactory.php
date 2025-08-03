@@ -17,8 +17,10 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'leader_id' => \App\Models\User::factory()->create()->id,
+            'owner_id' => \App\Models\User::factory(),
+            'name' => $this->faker->company(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

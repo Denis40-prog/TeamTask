@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    use HasFactory;
+
+    protected $fillable = [
+        'content',
+        'task_id',
+        'user_id',
+    ];
+
     public function task()
     {
         return $this->belongsTo(Task::class);
@@ -16,18 +24,4 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    use HasFactory;
-
-    /**
-     * Les attributs qui peuvent être remplis via mass assignment.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'content',
-        'task_id',
-        'project_id',
-        'user_id',
-    ];
 }

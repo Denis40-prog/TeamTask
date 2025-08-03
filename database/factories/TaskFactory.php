@@ -17,9 +17,15 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->word(),
-            'project_id' => 1,
-            'assignee_id' => 1,
+            'title' => $this->faker->sentence(4),
+            'description' => $this->faker->paragraph(),
+            'status' => $this->faker->randomElement(['to_do', 'in_progress', 'done', 'blocked']),
+            'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
+            'due_date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'project_id' => \App\Models\Project::factory(),
+            'assigned_id' => \App\Models\User::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

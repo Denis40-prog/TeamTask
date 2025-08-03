@@ -2,27 +2,50 @@
 
 namespace App\Livewire;
 
+use App\Models\Team;
+use App\Models\TeamUser;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Team;
-use App\Models\Project;
 
 class Dashboard extends Component
 {
-    public $teams;
-    public $projects;
+    public $showCreateForm = false;
+    public $newTeamName = '';
 
-    public function mount()
+    public function toggleCreateForm()
     {
-        $user = Auth::user();
+        $this->showCreateForm = !$this->showCreateForm;
+        $this->reset(['newTeamName']);
+    }
 
-        // Récupérer les équipes et projets associés à l'utilisateur
-        $this->teams = $user->teams; // En supposant que le modèle User a une relation "teams"
-        $this->projects = Project::whereIn('team_id', $this->teams->pluck('id'))->get();
+    public function createTeam()
+    {
+        $this->validate([
+            'newTeamName' => 'required|string|max:255',
+        ]);
+
+        $team = Team::create([
+            'name' => $this->newTeamName,
+            'owner_id' => Auth::id(),
+        ]);
+
+        // Ajouter l'utilisateur à l'équipe
+        TeamUser::create([
+            'team_id' => $team->id,
+            'user_id' => Auth::id(),
+            'role' => 'owner',
+        ]);
+
+        $this->reset(['newTeamName', 'showCreateForm']);
+        session()->flash('message', 'Équipe créée avec succès !');
     }
 
     public function render()
     {
-        return view('livewire.dashboard');
+        $teams = Auth::user()->teams()->get();
+
+        return view('livewire.dashboard', [
+            'teams' => $teams
+        ]);
     }
 }
