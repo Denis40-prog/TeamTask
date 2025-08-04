@@ -40,6 +40,20 @@
                             <span class="text-red-400 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="mb-4">
+                        <label for="newTeamDescription" class="block text-sm font-medium text-gray-300 mb-2">
+                            Description de l'équipe (optionnel)
+                        </label>
+                        <textarea
+                            id="newTeamDescription"
+                            wire:model="newTeamDescription"
+                            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                            placeholder="Décrivez l'équipe et ses objectifs"
+                            rows="3"></textarea>
+                        @error('newTeamDescription')
+                            <span class="text-red-400 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="flex gap-3">
                         <button
                             type="submit"
@@ -68,6 +82,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </div>
+                    @if($team->description)
+                        <p class="text-gray-300 text-sm mb-3">{{ Str::limit($team->description, 100) }}</p>
+                    @endif
                     <div class="text-sm text-gray-400">
                         <p class="mb-2">
                             <span class="font-medium">Membres:</span> {{ $team->users()->count() }}

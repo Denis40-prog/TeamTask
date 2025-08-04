@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(Task::class, 'assigned_id');
     }
 
+    public function assignedTasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_user')->withTimestamps();
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
