@@ -65,6 +65,49 @@
                             <span class="text-red-400 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="newProjectStartDate" class="block text-sm font-medium text-gray-300 mb-2">
+                                Date de début (optionnelle)
+                            </label>
+                            <input
+                                type="date"
+                                id="newProjectStartDate"
+                                wire:model="newProjectStartDate"
+                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            @error('newProjectStartDate')
+                                <span class="text-red-400 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="newProjectEndDate" class="block text-sm font-medium text-gray-300 mb-2">
+                                Date de fin (optionnelle)
+                            </label>
+                            <input
+                                type="date"
+                                id="newProjectEndDate"
+                                wire:model="newProjectEndDate"
+                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            @error('newProjectEndDate')
+                                <span class="text-red-400 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="newProjectStatus" class="block text-sm font-medium text-gray-300 mb-2">
+                            Statut du projet
+                        </label>
+                        <select
+                            id="newProjectStatus"
+                            wire:model="newProjectStatus"
+                            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                            <option value="active">Actif</option>
+                            <option value="archived">Archivé</option>
+                        </select>
+                        @error('newProjectStatus')
+                            <span class="text-red-400 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="flex gap-3">
                         <button
                             type="submit"
@@ -97,6 +140,25 @@
                         <p class="text-gray-300 mb-4 text-sm">{{ Str::limit($project->description, 100) }}</p>
                     @endif
                     <div class="text-sm text-gray-300">
+                        @if($project->start_date || $project->end_date)
+                            <p class="mb-2">
+                                <span class="font-medium">Période:</span>
+                                @if($project->start_date)
+                                    {{ $project->start_date->format('d/m/Y') }}
+                                @else
+                                    Non définie
+                                @endif
+                                @if($project->end_date)
+                                    - {{ $project->end_date->format('d/m/Y') }}
+                                @endif
+                            </p>
+                        @endif
+                        <p class="mb-2">
+                            <span class="font-medium">Statut:</span>
+                            <span class="px-2 py-1 rounded text-xs {{ $project->status === 'active' ? 'bg-green-600 text-green-100' : 'bg-gray-600 text-gray-300' }}">
+                                {{ $project->status === 'active' ? 'Actif' : 'Archivé' }}
+                            </span>
+                        </p>
                         <p class="mb-2">
                             <span class="font-medium">Tâches:</span> {{ $project->tasks()->count() }}
                         </p>
