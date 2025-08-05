@@ -10,16 +10,19 @@ use Illuminate\Support\Facades\Auth;
 class CreateTeamForm extends Component
 {
     public $name = '';
+    public $description = '';
     public $showForm = false;
 
     public function create()
     {
         $this->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         $team = Team::create([
             'name' => $this->name,
+            'description' => $this->description,
             'owner_id' => Auth::id(),
         ]);
 
@@ -33,7 +36,7 @@ class CreateTeamForm extends Component
 
         session()->flash('success', 'Équipe créée avec succès.');
 
-        $this->reset(['name', 'showForm']);
+        $this->reset(['name', 'description', 'showForm']);
 
         $this->dispatch('teamCreated');
         $this->dispatch('notificationCreated');

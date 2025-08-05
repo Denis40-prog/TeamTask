@@ -8,7 +8,7 @@
             </div>
             <button
                 wire:click="toggleCreateForm"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
+                class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
                 {{ $showCreateForm ? 'Annuler' : 'Nouvelle équipe' }}
             </button>
         </div>
@@ -40,10 +40,24 @@
                             <span class="text-red-400 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="mb-4">
+                        <label for="newTeamDescription" class="block text-sm font-medium text-gray-300 mb-2">
+                            Description de l'équipe (optionnel)
+                        </label>
+                        <textarea
+                            id="newTeamDescription"
+                            wire:model="newTeamDescription"
+                            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                            placeholder="Décrivez l'équipe et ses objectifs"
+                            rows="3"></textarea>
+                        @error('newTeamDescription')
+                            <span class="text-red-400 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="flex gap-3">
                         <button
                             type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
+                            class="bg-blue-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
                             Créer l'équipe
                         </button>
                         <button
@@ -60,7 +74,7 @@
         <!-- Teams Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($teams as $team)
-                <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-6 hover:bg-gray-750 hover:border-blue-500 transition-all duration-200 cursor-pointer shadow-lg"
+                <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-6 hover:bg-gray-750 hover:border-neutral-50 transition-all duration-200 cursor-pointer shadow-lg"
                      onclick="window.location.href='/projects/{{ $team->id }}'">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-semibold text-white">{{ $team->name }}</h3>
@@ -68,6 +82,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </div>
+                    @if($team->description)
+                        <p class="text-gray-300 text-sm mb-3">{{ Str::limit($team->description, 100) }}</p>
+                    @endif
                     <div class="text-sm text-gray-400">
                         <p class="mb-2">
                             <span class="font-medium">Membres:</span> {{ $team->users()->count() }}

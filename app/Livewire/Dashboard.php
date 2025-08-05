@@ -11,21 +11,24 @@ class Dashboard extends Component
 {
     public $showCreateForm = false;
     public $newTeamName = '';
+    public $newTeamDescription = '';
 
     public function toggleCreateForm()
     {
         $this->showCreateForm = !$this->showCreateForm;
-        $this->reset(['newTeamName']);
+        $this->reset(['newTeamName', 'newTeamDescription']);
     }
 
     public function createTeam()
     {
         $this->validate([
             'newTeamName' => 'required|string|max:255',
+            'newTeamDescription' => 'nullable|string|max:1000',
         ]);
 
         $team = Team::create([
             'name' => $this->newTeamName,
+            'description' => $this->newTeamDescription,
             'owner_id' => Auth::id(),
         ]);
 
@@ -36,7 +39,7 @@ class Dashboard extends Component
             'role' => 'owner',
         ]);
 
-        $this->reset(['newTeamName', 'showCreateForm']);
+        $this->reset(['newTeamName', 'newTeamDescription', 'showCreateForm']);
         session()->flash('message', 'Équipe créée avec succès !');
     }
 
