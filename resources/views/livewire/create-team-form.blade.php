@@ -18,6 +18,17 @@
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
 
+                    <textarea
+                        wire:model="description"
+                        class="rounded-xl w-full border border-neutral-300 dark:border-neutral-600 rounded p-2 mb-4 bg-grey dark:bg-neutral-800 text-black dark:text-white placeholder:text-neutral-500 dark:placeholder:text-neutral-400"
+                        placeholder="Description de l'équipe (optionnel)"
+                        rows="3"
+                    ></textarea>
+
+                    @error('description')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+
                     <div class="flex justify-end gap-2">
                         <button type="button" wire:click="$set('showForm', false)" class="btn">Annuler</button>
                         <button type="submit" class="btn btn-primary">Créer</button>
