@@ -14,6 +14,9 @@ class ProjectComponent extends Component
     public $showCreateForm = false;
     public $newProjectName = '';
     public $newProjectDescription = '';
+    public $newProjectStartDate = '';
+    public $newProjectEndDate = '';
+    public $newProjectStatus = 'active';
 
     public function mount($teamId)
     {
@@ -29,7 +32,7 @@ class ProjectComponent extends Component
     public function toggleCreateForm()
     {
         $this->showCreateForm = !$this->showCreateForm;
-        $this->reset(['newProjectName', 'newProjectDescription']);
+        $this->reset(['newProjectName', 'newProjectDescription', 'newProjectStartDate', 'newProjectEndDate', 'newProjectStatus']);
     }
 
     public function createProject()
@@ -37,16 +40,22 @@ class ProjectComponent extends Component
         $this->validate([
             'newProjectName' => 'required|string|max:255',
             'newProjectDescription' => 'nullable|string|max:1000',
+            'newProjectStartDate' => 'nullable|date',
+            'newProjectEndDate' => 'nullable|date',
+            'newProjectStatus' => 'required|in:active,archived',
         ]);
 
         Project::create([
             'name' => $this->newProjectName,
             'description' => $this->newProjectDescription,
+            'start_date' => $this->newProjectStartDate ?: null,
+            'end_date' => $this->newProjectEndDate ?: null,
+            'status' => $this->newProjectStatus,
             'team_id' => $this->teamId,
             'owner_id' => Auth::id(),
         ]);
 
-        $this->reset(['newProjectName', 'newProjectDescription', 'showCreateForm']);
+        $this->reset(['newProjectName', 'newProjectDescription', 'newProjectStartDate', 'newProjectEndDate', 'newProjectStatus', 'showCreateForm']);
         session()->flash('message', 'Projet créé avec succès !');
     }
 

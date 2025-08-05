@@ -12,6 +12,9 @@ class Project extends Model
     protected $fillable = [
         'name',
         'description',
+        'start_date',
+        'end_date',
+        'status',
         'team_id',
         'owner_id',
     ];
@@ -29,6 +32,14 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
     }
 
 }
