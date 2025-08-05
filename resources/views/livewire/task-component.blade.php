@@ -77,6 +77,57 @@
                                     <span class="text-red-400 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="newTaskPriority" class="block text-sm font-medium text-gray-300 mb-2">
+                                        Priorité
+                                    </label>
+                                    <select
+                                        id="newTaskPriority"
+                                        wire:model="newTaskPriority"
+                                        class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                                        <option value="low">Basse</option>
+                                        <option value="medium">Moyenne</option>
+                                        <option value="high">Élevée</option>
+                                    </select>
+                                    @error('newTaskPriority')
+                                        <span class="text-red-400 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="newTaskDueDate" class="block text-sm font-medium text-gray-300 mb-2">
+                                        Date d'échéance (optionnelle)
+                                    </label>
+                                    <input
+                                        type="date"
+                                        id="newTaskDueDate"
+                                        wire:model="newTaskDueDate"
+                                        class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                                    @error('newTaskDueDate')
+                                        <span class="text-red-400 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Assignés (optionnel - par défaut assigné à vous)
+                                </label>
+                                <div class="space-y-2 max-h-32 overflow-y-auto">
+                                    @foreach($teamMembers as $member)
+                                        <label class="flex items-center space-x-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                wire:model="selectedAssignees"
+                                                value="{{ $member->id }}"
+                                                class="rounded bg-gray-600 border-gray-500 text-blue-600 focus:ring-blue-500">
+                                            <span class="text-gray-300">{{ $member->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('selectedAssignees')
+                                    <span class="text-red-400 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
                             <div class="flex gap-3">
                                 <button
                                     type="submit"
@@ -175,9 +226,38 @@
                                 @if($task->description)
                                     <p class="text-gray-300 text-sm mb-3">{{ $task->description }}</p>
                                 @endif
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Assigné à: {{ $task->assigned_user->name ?? 'Non assigné' }}</span>
+                                <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="px-2 py-1 rounded text-xs
+                                            {{ $task->priority === 'high' ? 'bg-red-600 text-white' : '' }}
+                                            {{ $task->priority === 'medium' ? 'bg-yellow-600 text-white' : '' }}
+                                            {{ $task->priority === 'low' ? 'bg-green-600 text-white' : '' }}">
+                                            Priorité:
+                                            @if($task->priority === 'high')
+                                                Élevée
+                                            @elseif($task->priority === 'medium')
+                                                Moyenne
+                                            @else
+                                                Basse
+                                            @endif
+                                        </span>
+                                        @if($task->due_date)
+                                            <span>Échéance: {{ $task->due_date->format('d/m/Y') }}</span>
+                                        @endif
+                                    </div>
                                     <span>{{ $task->created_at->format('d/m/Y') }}</span>
+                                </div>
+                                <div class="text-xs text-gray-400">
+                                    <span>Assignés: </span>
+                                    @if($task->assignedUsers->count() > 0)
+                                        @foreach($task->assignedUsers as $user)
+                                            <span class="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 mb-1">{{ $user->name }}</span>
+                                        @endforeach
+                                    @elseif($task->assigned)
+                                        <span class="inline-block bg-blue-600 text-white px-2 py-1 rounded mr-1 mb-1">{{ $task->assigned->name }}</span>
+                                    @else
+                                        <span>Non assigné</span>
+                                    @endif
                                 </div>
                             @endif
                         </div>

@@ -38,4 +38,17 @@ class Task extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function assignedUsers()
+    {
+        return $this->belongsToMany(User::class, 'task_user')->withTimestamps();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'due_date' => 'date',
+        ];
+    }
+
 }
