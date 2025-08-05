@@ -19,6 +19,7 @@ class TeamFactory extends Factory
         return [
             'owner_id' => \App\Models\User::factory(),
             'name' => $this->faker->company(),
+            'description' => $this->faker->sentence(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

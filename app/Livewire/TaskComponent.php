@@ -17,6 +17,9 @@ class TaskComponent extends Component
     public $showCreateTaskForm = false;
     public $newTaskTitle = '';
     public $newTaskDescription = '';
+    public $newTaskPriority = 'medium';
+    public $newTaskDueDate = '';
+    public $selectedAssignees = [];
 
     // Création de commentaires
     public $newComment = '';
@@ -41,7 +44,7 @@ class TaskComponent extends Component
     public function toggleCreateTaskForm()
     {
         $this->showCreateTaskForm = !$this->showCreateTaskForm;
-        $this->reset(['newTaskTitle', 'newTaskDescription']);
+        $this->reset(['newTaskTitle', 'newTaskDescription', 'newTaskPriority', 'newTaskDueDate', 'selectedAssignees']);
     }
 
     public function createTask()
@@ -49,17 +52,30 @@ class TaskComponent extends Component
         $this->validate([
             'newTaskTitle' => 'required|string|max:255',
             'newTaskDescription' => 'nullable|string|max:1000',
+            'newTaskPriority' => 'required|in:low,medium,high',
+            'newTaskDueDate' => 'nullable|date',
+            'selectedAssignees' => 'nullable|array',
+            'selectedAssignees.*' => 'exists:users,id',
         ]);
 
-        Task::create([
+        $task = Task::create([
             'title' => $this->newTaskTitle,
             'description' => $this->newTaskDescription,
+            'priority' => $this->newTaskPriority,
+            'due_date' => $this->newTaskDueDate ?: null,
             'project_id' => $this->projectId,
             'assigned_id' => Auth::id(),
             'status' => 'to_do',
         ]);
 
-        $this->reset(['newTaskTitle', 'newTaskDescription', 'showCreateTaskForm']);
+        // Assign multiple users if selected, otherwise assign to creator
+        if (!empty($this->selectedAssignees)) {
+            $task->assignedUsers()->attach($this->selectedAssignees);
+        } else {
+            $task->assignedUsers()->attach(Auth::id());
+        }
+
+        $this->reset(['newTaskTitle', 'newTaskDescription', 'newTaskPriority', 'newTaskDueDate', 'selectedAssignees', 'showCreateTaskForm']);
         session()->flash('message', 'Tâche créée avec succès !');
     }
 
@@ -129,7 +145,12 @@ class TaskComponent extends Component
 
     public function render()
     {
-        $tasks = Task::where('project_id', $this->projectId)->get();
+        $tasks = Task::where('project_id', $this->projectId)
+                    ->with(['assignedUsers', 'assigned'])
+                    ->get();
+
+        // Get team members for assignee selection
+        $teamMembers = $this->project->team->users;
 
         // Récupérer les commentaires liés aux tâches de ce projet
         $taskIds = $tasks->pluck('id');
@@ -140,7 +161,8 @@ class TaskComponent extends Component
 
         return view('livewire.task-component', [
             'tasks' => $tasks,
-            'comments' => $comments
+            'comments' => $comments,
+            'teamMembers' => $teamMembers
         ]);
     }
 }

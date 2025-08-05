@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('status', ['active', 'archived'])->default('active');
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->timestamps();
