@@ -14,20 +14,27 @@
             </div>
             <button
                 wire:click="toggleCreateForm"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg border-2 border-blue-500 hover:border-blue-400 cursor-pointer">
-                <span class="flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    {{ $showCreateForm ? 'Annuler' : 'Nouveau projet' }}
-                </span>
+                class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
+                {{ $showCreateForm ? 'Annuler' : 'Nouveau projet' }}
             </button>
         </div>
 
         <!-- Flash Message -->
         @if (session()->has('message'))
-            <div class="bg-green-600 text-white p-4 rounded-lg mb-6">
-                {{ session('message') }}
+            <div
+                x-data="{ show: true }"
+                x-show="show"
+                class="bg-green-600 text-white p-4 rounded-lg mb-6 relative flex items-center justify-between"
+            >
+                <div class="pr-8">
+                    {{ session('message') }}
+                </div>
+                <button
+                    @click="show = false"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-lg leading-none hover:text-gray-300"
+                >
+                    &times;
+                </button>
             </div>
         @endif
 
@@ -128,7 +135,7 @@
         <!-- Projects Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($projects as $project)
-                <div class="bg-gray-700 border-2 border-gray-500 rounded-lg p-6 hover:bg-gray-600 hover:border-blue-400 transition-all duration-200 cursor-pointer shadow-lg"
+                <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-6 hover:bg-gray-750 hover:border-neutral-50 transition-all duration-200 cursor-pointer shadow-lg"
                      onclick="window.location.href='/projects/{{ $project->id }}/tasks'">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-semibold text-white">{{ $project->name }}</h3>
