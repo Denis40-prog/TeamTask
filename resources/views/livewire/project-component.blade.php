@@ -1,22 +1,83 @@
 <div>
     <div class="container mx-auto px-4 py-8 text-white">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <nav class="flex items-center space-x-2 text-sm text-gray-400 mb-2">
-                    <a href="/dashboard" class="hover:text-white transition-colors">Dashboard</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        <div class="mb-4">
+            <nav class="flex items-center space-x-2 text-sm text-gray-400 mb-2">
+                <a href="/dashboard" class="hover:text-white transition-colors">Dashboard</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="text-white">{{ $team->name }}</span>
+            </nav>
+
+            <h1 class="text-3xl font-bold text-white mb-4">Projets de {{ $team->name }}</h1>
+
+            <div x-data="{ open: false }" class="w-full mb-2">
+                <button
+                    @click="open = !open"
+                    class="w-full bg-gray-800 text-left text-white font-semibold py-3 px-4 rounded-lg flex justify-between items-center hover:bg-gray-700 transition"
+                >
+                    <span>Membres de l'équipe ({{ $team->users->count() }})</span>
+                    <svg :class="{'transform rotate-180': open}" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-                    <span class="text-white">{{ $team->name }}</span>
-                </nav>
-                <h1 class="text-3xl font-bold text-white">Projets de {{ $team->name }}</h1>
+                </button>
+
+                <!-- liste des membres -->
+                <div x-show="open" x-transition class="mt-4 bg-gray-800 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-lg font-semibold text-white mb-4">Liste des membres</h2>
+                    <ul class="mb-4">
+                        @foreach($team->users as $member)
+                            <li class="flex items-center justify-between bg-gray-700 p-2 rounded mb-2">
+                            <span>
+                                {{ $member->name }} ({{ $member->email }})
+                                <span class="text-xs text-gray-400 italic ml-2">
+                                    {{ $member->pivot->role === 'admin' ? 'Admin' : 'Membre' }}
+                                </span>
+                            </span>
+                                @if ($isAdmin)
+                                    <button
+                                        wire:click="removeMember({{ $member->id }})"
+                                        class="text-red-400 hover:text-red-600 text-sm"
+                                    >
+                                        Supprimer
+                                    </button>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                        @if ($isAdmin)
+                            <div class="flex items-center space-x-2">
+                                <input
+                                    type="email"
+                                    wire:model="newMemberEmail"
+                                    placeholder="Email du membre à ajouter"
+                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                                >
+                                <button
+                                    wire:click="addMember"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                                >
+                                    Ajouter
+                                </button>
+                            </div>
+                            @error('newMemberEmail')
+                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                            @enderror
+                        @endif
+                    </div>
+                </div>
             </div>
-            <button
-                wire:click="toggleCreateForm"
-                class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
-                {{ $showCreateForm ? 'Annuler' : 'Nouveau projet' }}
-            </button>
+
+            <!-- Bouton Nouveau projet -->
+            <div class="flex justify-end mt-2 mb-6">
+                <button
+                    wire:click="toggleCreateForm"
+                    class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer"
+                >
+                    {{ $showCreateForm ? 'Annuler' : 'Nouveau projet' }}
+                </button>
+            </div>
         </div>
 
         <!-- Flash Message -->
