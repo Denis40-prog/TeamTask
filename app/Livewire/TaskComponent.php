@@ -29,6 +29,15 @@ class TaskComponent extends Component
     public $editTaskTitle = '';
     public $editTaskDescription = '';
     public $editTaskStatus = '';
+    // Filtres
+    public $filterStatus = 'all';
+    public $filterAssignee = 'all';
+    public $filterDateFrom = null;
+    public $filterDateTo = null;
+
+    // Tri
+    public $sortField = 'created_at'; // 'created_at' | 'priority'
+    public $sortDir = 'desc'; // 'asc' | 'desc'
 
     public function mount($projectId)
     {
@@ -143,21 +152,72 @@ class TaskComponent extends Component
         session()->flash('message', 'Commentaire ajouté avec succès !');
     }
 
+    public function setSort($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDir = $field === 'priority' ? 'desc' : 'desc';
+        }
+    }
+
+    public function resetFilters()
+    {
+        $this->filterStatus   = 'all';
+        $this->filterAssignee = 'all';
+        $this->filterDateFrom = null;
+        $this->filterDateTo   = null;
+        $this->sortField      = 'created_at';
+        $this->sortDir        = 'desc';
+    }
+
     public function render()
     {
-        $tasks = Task::where('project_id', $this->projectId)
-                    ->with(['assignedUsers', 'assigned'])
-                    ->get();
-
-        // Get team members for assignee selection
         $teamMembers = $this->project->team->users;
 
-        // Récupérer les commentaires liés aux tâches de ce projet
+        $query = Task::where('project_id', $this->projectId)
+            ->with(['assignedUsers', 'assigned']);
+
+        // --- Filtres ---
+        if ($this->filterStatus !== 'all') {
+            $query->where('status', $this->filterStatus);
+        }
+
+        if ($this->filterAssignee !== 'all') {
+            $query->whereHas('assignedUsers', function ($q) {
+                $q->where('users.id', $this->filterAssignee);
+            });
+        }
+
+        if ($this->filterDateFrom) {
+            $query->whereDate('due_date', '>=', $this->filterDateFrom);
+        }
+        if ($this->filterDateTo) {
+            $query->whereDate('due_date', '<=', $this->filterDateTo);
+        }
+
+        // --- Tri ---
+        if ($this->sortField === 'priority') {
+            // Tri custom par priorité
+            if ($this->sortDir === 'asc') {
+                $query->orderByRaw("FIELD(priority, 'low','medium','high')");
+            } else {
+                $query->orderByRaw("FIELD(priority, 'high','medium','low')");
+            }
+        } else {
+            // created_at (par défaut)
+            $query->orderBy($this->sortField, $this->sortDir);
+        }
+
+        $tasks = $query->get();
+
+        // Commentaires
         $taskIds = $tasks->pluck('id');
         $comments = Comment::whereIn('task_id', $taskIds)
-                          ->with('user')
-                          ->orderBy('created_at', 'desc')
-                          ->get();
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('livewire.task-component', [
             'tasks' => $tasks,
@@ -165,4 +225,5 @@ class TaskComponent extends Component
             'teamMembers' => $teamMembers
         ]);
     }
+
 }
