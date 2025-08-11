@@ -8,15 +8,27 @@
             </div>
             <button
                 wire:click="toggleCreateForm"
-                class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
+                class="bg-gray-800 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
                 {{ $showCreateForm ? 'Annuler' : 'Nouvelle équipe' }}
             </button>
         </div>
 
         <!-- Flash Message -->
         @if (session()->has('message'))
-            <div class="bg-green-600 text-white p-4 rounded-lg mb-6">
-                {{ session('message') }}
+            <div
+                x-data="{ show: true }"
+                x-show="show"
+                class="bg-green-600 text-white p-4 rounded-lg mb-6 relative flex items-center justify-between"
+            >
+                <div class="pr-8">
+                    {{ session('message') }}
+                </div>
+                <button
+                    @click="show = false"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-lg leading-none hover:text-gray-300"
+                >
+                    &times;
+                </button>
             </div>
         @endif
 
