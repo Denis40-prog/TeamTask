@@ -21,8 +21,20 @@
 
         <!-- Flash Message -->
         @if (session()->has('message'))
-            <div class="bg-green-600 text-white p-4 rounded-lg mb-6">
-                {{ session('message') }}
+            <div
+                x-data="{ show: true }"
+                x-show="show"
+                class="bg-green-600 text-white p-4 rounded-lg mb-6 relative flex items-center justify-between"
+            >
+                <div class="pr-8">
+                    {{ session('message') }}
+                </div>
+                <button
+                    @click="show = false"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-lg leading-none hover:text-gray-300"
+                >
+                    &times;
+                </button>
             </div>
         @endif
 
@@ -146,6 +158,82 @@
                 @endif
 
                 <div class="space-y-4">
+                    <!-- Filters & Sorting -->
+                    <div class="bg-gray-700 border-2 border-gray-600 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Statut -->
+                        <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Statut</label>
+                        <select wire:model.change="filterStatus"
+                                class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                            <option value="all">Tous</option>
+                            <option value="to_do">À faire</option>
+                            <option value="in_progress">En cours</option>
+                            <option value="done">Terminé</option>
+                            <option value="blocked">Bloqué</option>
+                        </select>
+                        </div>
+
+                        <!-- Assigné -->
+                        <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Assigné</label>
+                        <select wire:model.change="filterAssignee"
+                                class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                            <option value="all">Tous</option>
+                            @foreach($teamMembers as $member)
+                            <option value="{{ $member->id }}">{{ $member->name }}</option>
+                            @endforeach
+                        </select>
+                        </div>
+
+                        <!-- Date d'échéance - de -->
+                        <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Échéance min</label>
+                        <input type="date" wire:model.change="filterDateFrom"
+                                class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                        </div>
+
+                        <!-- Date d'échéance - à -->
+                        <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Échéance max</label>
+                        <input type="date" wire:model.change="filterDateTo"
+                                class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between">
+                        <!-- Tri -->
+                        <div class="flex items-center gap-2">
+                        <span class="text-xs uppercase tracking-wider text-gray-400">Trier par:</span>
+
+                        <button type="button" wire:click="setSort('created_at')"
+                                class="px-3 py-1 rounded-lg text-sm
+                                {{ $sortField==='created_at' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-200 hover:bg-gray-500' }}">
+                            Date de création
+                            @if($sortField==='created_at')
+                            <span class="ml-1 text-xs opacity-80">{{ $sortDir==='asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </button>
+
+                        <button type="button" wire:click="setSort('priority')"
+                                class="px-3 py-1 rounded-lg text-sm
+                                {{ $sortField==='priority' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-200 hover:bg-gray-500' }}">
+                            Priorité
+                            @if($sortField==='priority')
+                            <span class="ml-1 text-xs opacity-80">{{ $sortDir==='asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </button>
+                        </div>
+
+                        <!-- Reset rapide (optionnel) -->
+                        <button type="button"
+                                wire:click="resetFilters"
+                                class="text-xs bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-lg">
+                        Réinitialiser
+                        </button>
+                    </div>
+                    </div>
+
                     @forelse($tasks as $task)
                         <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-650 transition-colors">
                             @if($editingTaskId === $task->id)
@@ -172,7 +260,7 @@
                                         @enderror
                                     </div>
                                     <div class="mb-3">
-                                        <select wire:model="editTaskStatus" class="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs">
+                                        <select wire:model.change="editTaskStatus" class="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs">
                                             <option value="to_do">À faire</option>
                                             <option value="in_progress">En cours</option>
                                             <option value="done">Terminé</option>
@@ -304,7 +392,7 @@
                         </button>
                     </form>
                 </div>
-
+                <!-- Comments list -->
                 <div class="space-y-4 max-h-96 overflow-y-auto">
                     @forelse($comments as $comment)
                         <div class="bg-gray-700 rounded-lg p-4">
