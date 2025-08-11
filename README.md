@@ -42,11 +42,11 @@
 
 ## 🛠 Technologies utilisées
 
-- **Backend :** [Laravel 10](https://laravel.com/) + [PHP 8+](https://www.php.net/)
+- **Backend :** [Laravel 12](https://laravel.com/) + [PHP 8+](https://www.php.net/)
 - **Frontend :** [Livewire](https://livewire.laravel.com/) + [Blade](https://laravel.com/docs/blade) + [Tailwind CSS](https://tailwindcss.com/)
 - **Base de données :** [MySQL](https://www.mysql.com/)
 - **Authentification :** [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze) / [Sanctum](https://laravel.com/docs/sanctum)
-- **Environnement :** Laravel Sail, MAMP, WAMP ou Valet
+- **Environnement :** Sail (WSL)
 
 ---
 
@@ -54,7 +54,6 @@
 
 - `app/Livewire/TaskComponent.php` → Composant Livewire pour la gestion des tâches et commentaires.
 - `resources/views/livewire/task-component.blade.php` → Vue principale avec gestion affichage/édition/création.
-- `app/Models/Task.php`, `Project.php`, `Comment.php` → Modèles Eloquent.
 - Routes Laravel dans `web.php`.
 
 ---
@@ -88,15 +87,15 @@ Configurer la connexion à la base de données dans .env.
 
 ### 4. Lancer les migrations et seeders
 ```bash
-php artisan migrate --seed
+sail artisan migrate --seed
 ```
 
 ---
 
 ### 5. Lancer le serveur
 ```bash
-php artisan serve
-npm run dev
+sail up
+sail npm run dev
 ```
 
 ---
