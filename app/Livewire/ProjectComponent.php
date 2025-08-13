@@ -28,7 +28,7 @@ class ProjectComponent extends Component
             $query->withPivot('role');
         }])->findOrFail($teamId);
 
-        if (!$this->team->users->contains(Auth::id())) {
+        if (! $this->team->users->pluck('id')->contains(Auth::id())) {
             abort(403, 'Vous n\'êtes pas membre de cette équipe.');
         }
 
@@ -80,14 +80,17 @@ class ProjectComponent extends Component
 
     public function addMember()
     {
+        abort_unless($this->isAdmin, 403);
+
         $this->validate([
             'newMemberEmail' => 'required|email|exists:users,email',
         ]);
 
         $user = User::where('email', $this->newMemberEmail)->first();
 
-        if ($this->team->users->contains($user)) {
+        if ($this->team->users()->whereKey($user->id)->exists()) {
             session()->flash('message', 'Ce membre est déjà dans l\'équipe.');
+            $this->newMemberEmail = '';
             return;
         }
 
@@ -99,6 +102,8 @@ class ProjectComponent extends Component
 
     public function removeMember($userId)
     {
+        abort_unless($this->isAdmin, 403);
+
         $this->team->users()->detach($userId);
         $this->team->refresh();
         session()->flash('message', 'Membre retiré de l\'équipe.');
