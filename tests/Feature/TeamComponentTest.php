@@ -71,9 +71,9 @@ it('recherche par nom et description, sans sortir du scope utilisateur', functio
     $this->actingAs($me);
 
     Livewire::test(TeamComponent::class)
-        ->set('search', 'fusée bleu') // match description
+        ->set('search', 'fusée bleu')
         ->assertSee('Rocket Team')
-        ->assertDontSee('Foreign'); // reste dans mon scope
+        ->assertDontSee('Foreign');
 });
 
 it('réinitialise la pagination quand la recherche change', function () {
@@ -84,11 +84,11 @@ it('réinitialise la pagination quand la recherche change', function () {
     Livewire::test(\App\Livewire\TeamComponent::class)
         // Page 2
         ->call('gotoPage', 2)
-        ->assertSee('P 19')     // ✅ présent en page 2
-        ->assertDontSee('P 11') // ✅ P 11 est en page 1 (ordre lexicographique)
+        ->assertSee('P 19')     // en page 2
+        ->assertDontSee('P 11') //  en page 1
         // Changer la recherche => updatingSearch() -> resetPage()
         ->set('search', 'P 1')
-        ->assertSee('P 1');     // ✅ revenu en page 1 filtrée
+        ->assertSee('P 1');     // en page 1 filtrée
 });
 
 it('tri par défaut par nom asc et bascule asc/desc sur le même champ', function () {
@@ -104,7 +104,6 @@ it('tri par défaut par nom asc et bascule asc/desc sur le même champ', functio
 
     $this->actingAs($me);
 
-    // Par défaut: sortBy=name, sortDirection=asc → Alpha, Bravo, Charlie
     Livewire::test(TeamComponent::class)
         ->assertSeeInOrder(['Alpha', 'Bravo', 'Charlie'])
 
@@ -140,7 +139,7 @@ it('changer de champ de tri le remet en asc et reset la pagination', function ()
 
 it('pagine par 10 et inclut les compteurs users/projects', function () {
     $me = User::factory()->create();
-    makeTeamsFor($me, 12, 'Paginate'); // 12 éléments
+    makeTeamsFor($me, 12, 'Paginate');
     $this->actingAs($me);
 
     Livewire::test(\App\Livewire\TeamComponent::class)
@@ -150,8 +149,8 @@ it('pagine par 10 et inclut les compteurs users/projects', function () {
         })
         ->assertSee('Paginate 1')
         ->assertSee('Paginate 10')
-        ->assertSee('Paginate 11')   // ✅ est bien en page 1 (ordre lexicographique)
-        ->assertDontSee('Paginate 8'); // ✅ pas en page 1
+        ->assertSee('Paginate 11')   // en page 1
+        ->assertDontSee('Paginate 8'); // pas en page 1
 });
 
 
@@ -168,12 +167,11 @@ it('respecte la recherche combinée au tri', function () {
     $this->actingAs($me);
 
     Livewire::test(TeamComponent::class)
-        ->set('search', 'Omega') // match "Omega" & "Alpha Omega"
+        ->set('search', 'Omega')
         ->assertSee('Omega')
         ->assertSee('Alpha Omega')
         ->assertDontSee('Zeta')
 
-        // Tri desc par nom → "Omega" avant "Alpha Omega"
         ->call('sortBy', 'name')
         ->assertSet('sortDirection', 'desc')
         ->assertSeeInOrder(['Omega', 'Alpha Omega']);
