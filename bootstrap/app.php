@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\EnsureUserInTeam;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // crée un alias utilisable dans les routes
+        $middleware->alias([
+            'team.member' => EnsureUserInTeam::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

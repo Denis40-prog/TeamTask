@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('soreness')->comment('Note de 1 à 10');
             $table->unsignedTinyInteger('energy')->comment('Note de 1 à 10');
             $table->timestamps();
+            $table->unique(['user_id', 'date']);
         });
     }
 
