@@ -2,8 +2,9 @@
 
 use App\Models\User;
 use Livewire\Volt\Volt as LivewireVolt;
+use Illuminate\Support\Str;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+// uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('login screen can be rendered', function () {
     $response = $this->get('/login');
@@ -42,7 +43,10 @@ test('users can not authenticate with invalid password', function () {
 test('users can logout', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
+     $token = Str::random(40);
+    $this->withSession(['_token' => $token]);
+
+    $response = $this->actingAs($user)->post('/logout', ['_token' => $token]);
 
     $response->assertRedirect('/');
 

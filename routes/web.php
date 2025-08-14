@@ -64,4 +64,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/{projectId}/tasks', TaskComponent::class)->name('projects.tasks');
 });
 
+Route::middleware(['auth', 'verified', 'team.member'])
+    ->get('/wellness', WellnessSurveyComponent::class)
+    ->name('wellness.survey');
+
 require __DIR__.'/auth.php';
