@@ -25,7 +25,7 @@ class ProjectFactory extends Factory
 
         return [
             'name' => $this->faker->sentence(3),
-            'description' => $this->faker->paragraph(),
+            'description' => $this->faker->sentence(8),
             'start_date' => $startDate,
             'end_date' => $endDate,
             'status' => $endDate === null ? 'active' : 'archived',

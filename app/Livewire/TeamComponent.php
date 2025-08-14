@@ -50,8 +50,11 @@ class TeamComponent extends Component
                 $query->where('users.id', Auth::id());
             })
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                $search = "%{$this->search}%";
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', $search)
+                    ->orWhere('description', 'like', $search);
+                });
             })
             ->withCount(['users', 'projects'])
             ->orderBy($this->sortBy, $this->sortDirection)

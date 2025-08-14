@@ -199,14 +199,16 @@ class TaskComponent extends Component
 
         // --- Tri ---
         if ($this->sortField === 'priority') {
-            // Tri custom par priorité
-            if ($this->sortDir === 'asc') {
-                $query->orderByRaw("FIELD(priority, 'low','medium','high')");
-            } else {
-                $query->orderByRaw("FIELD(priority, 'high','medium','low')");
-            }
+            $dir = $this->sortDir === 'asc' ? 'ASC' : 'DESC';
+
+            $query->orderByRaw("
+                CASE priority
+                    WHEN 'high' THEN 3
+                    WHEN 'medium' THEN 2
+                    WHEN 'low' THEN 1
+                END $dir
+            ");
         } else {
-            // created_at (par défaut)
             $query->orderBy($this->sortField, $this->sortDir);
         }
 
