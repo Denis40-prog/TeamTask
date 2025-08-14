@@ -66,7 +66,7 @@ class WellnessSurveyComponent extends Component
         }
     }
 
-    public function save(): void
+    public function save()
     {
         $validated = $this->validate();
 
@@ -83,9 +83,10 @@ class WellnessSurveyComponent extends Component
 
         $this->existingId = $survey->id;
 
-        session()->flash('success', 'Votre météo des émotions a été enregistrée.');
         // Event pour éventuellement rafraîchir un widget dashboard, si tu en as un
         $this->dispatch('wellnessSurveySaved');
+
+        $this->dispatch('flash', type: 'success', text: 'Votre météo des émotions a été enregistrée !');
     }
 
     public function render()
