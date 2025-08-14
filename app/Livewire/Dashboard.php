@@ -40,7 +40,8 @@ class Dashboard extends Component
         ]);
 
         $this->reset(['newTeamName', 'newTeamDescription', 'showCreateForm']);
-        session()->flash('message', 'Équipe créée avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Équipe créée avec succès !');
     }
 
     public function render()

@@ -62,7 +62,8 @@ class ProjectComponent extends Component
         ]);
 
         $this->reset(['newProjectName', 'newProjectDescription', 'newProjectStartDate', 'newProjectEndDate', 'newProjectStatus', 'showCreateForm']);
-        session()->flash('message', 'Projet créé avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Projet créée avec succès !');
     }
 
     public function updatedTeam()
@@ -89,7 +90,8 @@ class ProjectComponent extends Component
         $user = User::where('email', $this->newMemberEmail)->first();
 
         if ($this->team->users()->whereKey($user->id)->exists()) {
-            session()->flash('message', 'Ce membre est déjà dans l\'équipe.');
+            $this->dispatch('flash', type: 'info', text: 'Ce membre est déjà dans l\'équipe !');
+
             $this->newMemberEmail = '';
             return;
         }
@@ -97,7 +99,8 @@ class ProjectComponent extends Component
         $this->team->users()->attach($user);
         $this->newMemberEmail = '';
         $this->team->refresh();
-        session()->flash('message', 'Membre ajouté avec succès.');
+
+        $this->dispatch('flash', type: 'success', text: 'Membre ajouté avec succès !');
     }
 
     public function removeMember($userId)
@@ -106,7 +109,8 @@ class ProjectComponent extends Component
 
         $this->team->users()->detach($userId);
         $this->team->refresh();
-        session()->flash('message', 'Membre retiré de l\'équipe.');
+
+        $this->dispatch('flash', type: 'success', text: 'Membre retiré de l\'équipe !');
     }
 
     public function render()
