@@ -19,24 +19,7 @@
             @endif
         </div>
 
-        <!-- Flash Message -->
-        @if (session()->has('message'))
-            <div
-                x-data="{ show: true }"
-                x-show="show"
-                class="bg-green-600 text-white p-4 rounded-lg mb-6 relative flex items-center justify-between"
-            >
-                <div class="pr-8">
-                    {{ session('message') }}
-                </div>
-                <button
-                    @click="show = false"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-lg leading-none hover:text-gray-300"
-                >
-                    &times;
-                </button>
-            </div>
-        @endif
+        <livewire:ui.flash-message />
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Tasks Section -->

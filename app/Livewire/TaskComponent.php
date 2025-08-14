@@ -85,7 +85,8 @@ class TaskComponent extends Component
         }
 
         $this->reset(['newTaskTitle', 'newTaskDescription', 'newTaskPriority', 'newTaskDueDate', 'selectedAssignees', 'showCreateTaskForm']);
-        session()->flash('message', 'Tâche créée avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Tâche créée avec succès !');
     }
 
     public function startEditing($taskId)
@@ -113,7 +114,8 @@ class TaskComponent extends Component
         ]);
 
         $this->reset(['editingTaskId', 'editTaskTitle', 'editTaskDescription', 'editTaskStatus']);
-        session()->flash('message', 'Tâche mise à jour avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Tâche mise à jour avec succès !');
     }
 
     public function cancelEditing()
@@ -149,7 +151,8 @@ class TaskComponent extends Component
         ]);
 
         $this->reset(['newComment']);
-        session()->flash('message', 'Commentaire ajouté avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Commentaire ajouté avec succès !');
     }
 
     public function setSort($field)

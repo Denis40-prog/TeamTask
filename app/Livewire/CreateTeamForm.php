@@ -34,12 +34,12 @@ class CreateTeamForm extends Component
             'title' => 'Vous avez créé l’équipe « ' . $team->name . ' »',
         ]);
 
-        session()->flash('success', 'Équipe créée avec succès.');
-
         $this->reset(['name', 'description', 'showForm']);
 
         $this->dispatch('teamCreated');
         $this->dispatch('notificationCreated');
+
+        $this->dispatch('flash', type: 'success', text: 'Équipe créée avec succès !');
     }
 
     public function render()
