@@ -11,6 +11,14 @@
                 <x-app-logo />
             </a>
 
+            @auth
+                <a href="{{ route('wellness.survey') }}"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span>🫶</span>
+                    <span>Météo des émotions</span>
+                </a>
+            @endauth
+
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
