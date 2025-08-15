@@ -11,11 +11,10 @@ class AuthServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        // Gate::define('viewWellness', fn (User $user) => $user->isAdmin());
-        Gate::define('viewWellness', fn (User $user) => $user->role === 'admin');
+        Gate::define('viewWellness', fn (User $user) => in_array($user->role, ['admin', 'manager']));
 
         Gate::define('viewWellnessForTeam', function (User $user, Team $team) {
-            if ($user->role !== 'admin') return false;
+            if (!in_array($user->role, ['admin', 'manager'])) return false;
             return $user->teams()->whereKey($team->id)->exists();
         });
     }

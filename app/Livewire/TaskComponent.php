@@ -34,10 +34,9 @@ class TaskComponent extends Component
     public $filterAssignee = 'all';
     public $filterDateFrom = null;
     public $filterDateTo = null;
-
     // Tri
-    public $sortField = 'created_at'; // 'created_at' | 'priority'
-    public $sortDir = 'desc'; // 'asc' | 'desc'
+    public $sortField = 'created_at';
+    public $sortDir = 'desc';
 
     public function mount($projectId)
     {
@@ -123,30 +122,15 @@ class TaskComponent extends Component
         $this->reset(['editingTaskId', 'editTaskTitle', 'editTaskDescription', 'editTaskStatus']);
     }
 
-    public function addComment()
+    public function addGlobalComment()
     {
         $this->validate([
             'newComment' => 'required|string|max:1000',
         ]);
 
-        // Créer un commentaire général pour le projet (associé à la première tâche ou créer une tâche système)
-        $firstTask = Task::where('project_id', $this->projectId)->first();
-
-        if (!$firstTask) {
-            // S'il n'y a pas de tâches, créer une tâche système pour les commentaires généraux
-            $firstTask = Task::create([
-                'title' => 'Commentaires généraux',
-                'description' => 'Tâche système pour les commentaires généraux du projet',
-                'project_id' => $this->projectId,
-                'assigned_user_id' => Auth::id(),
-                'status' => 'completed',
-                'created_by' => Auth::id(),
-            ]);
-        }
-
         Comment::create([
             'content' => $this->newComment,
-            'task_id' => $firstTask->id,
+            'project_id' => $this->projectId,
             'user_id' => Auth::id(),
         ]);
 
@@ -218,8 +202,8 @@ class TaskComponent extends Component
         $tasks = $query->get();
 
         // Commentaires
-        $taskIds = $tasks->pluck('id');
-        $comments = Comment::whereIn('task_id', $taskIds)
+        $comments = Comment::where('project_id', $this->projectId)
+            ->whereNull('task_id')
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->get();

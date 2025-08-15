@@ -34,6 +34,11 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     protected function casts(): array
     {
         return [

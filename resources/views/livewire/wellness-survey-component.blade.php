@@ -12,9 +12,9 @@
             <label class="block text-sm font-medium mb-1" for="date">Date</label>
             <div class="flex items-center gap-3">
                 <input id="date" type="date" wire:model.live="date"
-                       class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" />
+                    class="w-full rounded-lg border-slate-300 dark:border-gray-600 text-slate-800 dark:text-white focus:border-emerald-500 dark:focus:border-blue-500 focus:ring-emerald-500 dark:focus:ring-blue-500" />
                 <button type="button"
-                        class="shrink-0 rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
+                        class="shrink-0 rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
                         wire:click="$set('date','{{ now()->toDateString() }}')">
                     Aujourd’hui
                 </button>
@@ -58,11 +58,11 @@
                             wire:click="$set('sleep', {{ $i }})"
                             class="group flex flex-col items-center justify-center rounded-xl border py-3 transition
                                    hover:scale-105 hover:shadow-md
-                                   {{ $sleep == $i ? 'border-indigo-400 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white' }}">
+                                   {{ $sleep == $i ? 'border-emerald-400 ring-2 ring-emerald-200 bg-emerald-50 dark:border-emerald-500 dark:ring-emerald-800 dark:bg-emerald-900' : 'border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700' }}">
                         <span class="text-2xl transition group-hover:scale-110 {{ $sleep == $i ? 'animate-pulse' : '' }}">
                             {{ $sleepEmojis[$i-1] }}
                         </span>
-                        <span class="mt-1 text-[10px] text-gray-500">{{ $i }}</span>
+                        <span class="mt-1 text-[10px] text-slate-500 dark:text-gray-400">{{ $i }}</span>
                     </button>
                 @endforeach
             </div>
@@ -86,11 +86,11 @@
                             wire:click="$set('stress', {{ $i }})"
                             class="group flex flex-col items-center justify-center rounded-xl border py-3 transition
                                    hover:scale-105 hover:shadow-md
-                                   {{ $stress == $i ? 'border-indigo-400 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white' }}">
+                                   {{ $stress == $i ? 'border-emerald-400 ring-2 ring-emerald-200 bg-emerald-50 dark:border-emerald-500 dark:ring-emerald-800 dark:bg-emerald-900' : 'border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700' }}">
                         <span class="text-2xl transition group-hover:scale-110 {{ $stress == $i ? 'animate-pulse' : '' }}">
                             {{ $stressEmojis[$i-1] }}
                         </span>
-                        <span class="mt-1 text-[10px] text-gray-500">{{ $i }}</span>
+                        <span class="mt-1 text-[10px] text-slate-500 dark:text-gray-400">{{ $i }}</span>
                     </button>
                 @endforeach
             </div>
@@ -114,11 +114,11 @@
                             wire:click="$set('soreness', {{ $i }})"
                             class="group flex flex-col items-center justify-center rounded-xl border py-3 transition
                                    hover:scale-105 hover:shadow-md
-                                   {{ $soreness == $i ? 'border-indigo-400 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white' }}">
+                                   {{ $soreness == $i ? 'border-emerald-400 ring-2 ring-emerald-200 bg-emerald-50 dark:border-emerald-500 dark:ring-emerald-800 dark:bg-emerald-900' : 'border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700' }}">
                         <span class="text-2xl transition group-hover:scale-110 {{ $soreness == $i ? 'animate-pulse' : '' }}">
                             {{ $soreEmojis[$i-1] }}
                         </span>
-                        <span class="mt-1 text-[10px] text-gray-500">{{ $i }}</span>
+                        <span class="mt-1 text-[10px] text-slate-500 dark:text-gray-400">{{ $i }}</span>
                     </button>
                 @endforeach
             </div>
@@ -142,11 +142,11 @@
                             wire:click="$set('energy', {{ $i }})"
                             class="group flex flex-col items-center justify-center rounded-xl border py-3 transition
                                    hover:scale-105 hover:shadow-md
-                                   {{ $energy == $i ? 'border-indigo-400 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white' }}">
+                                   {{ $energy == $i ? 'border-emerald-400 ring-2 ring-emerald-200 bg-emerald-50 dark:border-emerald-500 dark:ring-emerald-800 dark:bg-emerald-900' : 'border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700' }}">
                         <span class="text-2xl transition group-hover:scale-110 {{ $energy == $i ? 'animate-pulse' : '' }}">
                             {{ $energyEmojis[$i-1] }}
                         </span>
-                        <span class="mt-1 text-[10px] text-gray-500">{{ $i }}</span>
+                        <span class="mt-1 text-[10px] text-slate-500 dark:text-gray-400">{{ $i }}</span>
                     </button>
                 @endforeach
             </div>
@@ -155,16 +155,16 @@
 
         {{-- Presets --}}
         <div class="flex flex-wrap gap-2">
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50"
-                    wire:click="$set('sleep',10); $set('stress',1); $set('soreness',1); $set('energy',10)">
+            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+                    wire:click="setGreatDay">
                 💚 Journée au top
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50"
-                    wire:click="$set('sleep',4); $set('stress',4); $set('soreness',5); $set('energy',7)">
+            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+                    wire:click="setAverageDay">
                 🧩 Moyen + motivation
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50"
-                    wire:click="$set('sleep',2); $set('stress',8); $set('soreness',8); $set('energy',2)">
+            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+                    wire:click="setDifficultDay">
                 🫶 Journée difficile
             </button>
         </div>
