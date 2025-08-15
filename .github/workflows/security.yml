@@ -1,0 +1,73 @@
+name: Security Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run security check daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  security-php:
+    runs-on: ubuntu-latest
+    name: PHP Security Check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Run PHP Security Checker
+        run: |
+          composer require --dev sensiolabs/security-checker
+          ./vendor/bin/security-checker security:check composer.lock
+
+  security-npm:
+    runs-on: ubuntu-latest
+    name: NPM Security Check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Run NPM Security Audit
+        run: npm audit --audit-level=high
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    name: Secrets Detection
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
