@@ -13,11 +13,13 @@
             </a>
 
             @auth
-                <a href="{{ route('wellness.survey') }}"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <span>🫶</span>
-                    <span>Météo des émotions</span>
-                </a>
+                @if(auth()->user()->teams->isNotEmpty())
+                    <a href="{{ route('wellness.survey') }}"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span>🫶</span>
+                        <span>Météo des émotions</span>
+                    </a>
+                @endif
             @endauth
 
             @can('viewWellness')
