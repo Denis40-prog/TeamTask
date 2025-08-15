@@ -66,6 +66,30 @@ class WellnessSurveyComponent extends Component
         }
     }
 
+    public function setGreatDay()
+    {
+        $this->sleep = 10;
+        $this->stress = 1;
+        $this->soreness = 1;
+        $this->energy = 10;
+    }
+
+    public function setAverageDay()
+    {
+        $this->sleep = 4;
+        $this->stress = 4;
+        $this->soreness = 5;
+        $this->energy = 7;
+    }
+
+    public function setDifficultDay()
+    {
+        $this->sleep = 2;
+        $this->stress = 8;
+        $this->soreness = 8;
+        $this->energy = 2;
+    }
+
     public function save()
     {
         $validated = $this->validate();
