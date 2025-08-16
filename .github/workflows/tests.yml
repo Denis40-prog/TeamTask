@@ -26,34 +26,31 @@ jobs:
 
       - name: App key + env
         run: |
-          # Create a fresh .env for testing
-          cat > .env << 'EOF'
+          # Create a fresh .env for testing with proper APP_KEY
+          APP_KEY=$(php -r "echo 'base64:' . base64_encode(random_bytes(32));")
+          cat > .env << EOF
           APP_NAME=TeamTask
           APP_ENV=testing
-          APP_KEY=base64:$(openssl rand -base64 32)
+          APP_KEY=${APP_KEY}
           APP_DEBUG=true
           APP_TIMEZONE=UTC
           APP_URL=http://localhost
-          
+
           DB_CONNECTION=sqlite
           DB_DATABASE=:memory:
-          
+
           SESSION_DRIVER=array
           QUEUE_CONNECTION=sync
           CACHE_STORE=array
           MAIL_MAILER=array
-          
+
           BCRYPT_ROUNDS=4
           EOF
-          
-          # Generate proper APP_KEY
-          APP_KEY=$(php -r "echo 'base64:' . base64_encode(random_bytes(32));")
-          sed -i "s/APP_KEY=base64:.*/APP_KEY=${APP_KEY}/" .env
-          
+
           # Verify configuration
           echo "Generated .env file:"
           cat .env
-          
+
           php artisan config:clear
 
       - name: Run migrations
