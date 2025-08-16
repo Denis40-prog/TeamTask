@@ -26,11 +26,11 @@ class CreateTeamForm extends Component
             'owner_id' => Auth::id(),
         ]);
 
-        // table link
-        $team->users()->attach(auth()->id(), ['role' => 'owner']);
+        // table link - Le créateur devient automatiquement admin de l'équipe
+        $team->users()->attach(Auth::id(), ['role' => 'admin']);
 
         Notification::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => 'Vous avez créé l’équipe « ' . $team->name . ' »',
         ]);
 

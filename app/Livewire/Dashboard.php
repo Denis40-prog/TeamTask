@@ -36,7 +36,7 @@ class Dashboard extends Component
         TeamUser::create([
             'team_id' => $team->id,
             'user_id' => Auth::id(),
-            'role' => 'owner',
+            'role' => 'admin',
         ]);
 
         $this->reset(['newTeamName', 'newTeamDescription', 'showCreateForm']);

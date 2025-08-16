@@ -20,6 +20,7 @@ class ProjectComponent extends Component
     public $newProjectStatus = 'active';
     public $newMemberEmail = '';
     public bool $isAdmin;
+    public bool $isTeamAdmin;
 
     public function mount($teamId)
     {
@@ -33,6 +34,7 @@ class ProjectComponent extends Component
         }
 
         $this->checkIfAdmin();
+        $this->checkIfTeamAdmin();
     }
 
     public function toggleCreateForm()
@@ -69,19 +71,31 @@ class ProjectComponent extends Component
     public function updatedTeam()
     {
         $this->checkIfAdmin();
+        $this->checkIfTeamAdmin();
     }
 
     private function checkIfAdmin()
     {
-        $currentUser = auth()->user();
-        $this->isAdmin = $this->team->users
+        $this->isAdmin = Auth::user()->role === 'admin';
+    }
+
+    private function checkIfTeamAdmin()
+    {
+        $currentUser = Auth::user();
+
+        if ($this->team->owner_id == $currentUser->id) {
+            $this->isTeamAdmin = true;
+            return;
+        }
+
+        $this->isTeamAdmin = $this->team->users
             ->where('id', $currentUser->id)
             ->first()?->pivot->role === 'admin';
     }
 
     public function addMember()
     {
-        abort_unless($this->isAdmin, 403);
+        abort_unless($this->isTeamAdmin, 403);
 
         $this->validate([
             'newMemberEmail' => 'required|email|exists:users,email',
@@ -96,7 +110,7 @@ class ProjectComponent extends Component
             return;
         }
 
-        $this->team->users()->attach($user);
+        $this->team->users()->attach($user, ['role' => 'member']);
         $this->newMemberEmail = '';
         $this->team->refresh();
 
@@ -105,12 +119,49 @@ class ProjectComponent extends Component
 
     public function removeMember($userId)
     {
-        abort_unless($this->isAdmin, 403);
+        abort_unless($this->isTeamAdmin, 403);
 
         $this->team->users()->detach($userId);
         $this->team->refresh();
 
         $this->dispatch('flash', type: 'success', text: 'Membre retiré de l\'équipe !');
+    }
+
+    public function promoteToAdmin($userId)
+    {
+        abort_unless($this->isTeamAdmin, 403);
+
+        if (!$this->team->users()->whereKey($userId)->exists()) {
+            $this->dispatch('flash', type: 'error', text: 'Utilisateur non trouvé dans cette équipe !');
+            return;
+        }
+
+        $this->team->users()->updateExistingPivot($userId, ['role' => 'admin']);
+        $this->team->refresh();
+
+        $user = User::find($userId);
+        $this->dispatch('flash', type: 'success', text: $user->name . ' a été promu administrateur de l\'équipe !');
+    }
+
+    public function demoteFromAdmin($userId)
+    {
+        abort_unless($this->isTeamAdmin, 403);
+
+        if (!$this->team->users()->whereKey($userId)->exists()) {
+            $this->dispatch('flash', type: 'error', text: 'Utilisateur non trouvé dans cette équipe !');
+            return;
+        }
+
+        if ($this->team->owner_id == $userId) {
+            $this->dispatch('flash', type: 'error', text: 'Impossible de rétrograder le propriétaire de l\'équipe !');
+            return;
+        }
+
+        $this->team->users()->updateExistingPivot($userId, ['role' => 'member']);
+        $this->team->refresh();
+
+        $user = User::find($userId);
+        $this->dispatch('flash', type: 'success', text: $user->name . ' n\'est plus administrateur de l\'équipe !');
     }
 
     public function render()
