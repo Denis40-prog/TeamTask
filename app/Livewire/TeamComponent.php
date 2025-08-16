@@ -45,9 +45,14 @@ class TeamComponent extends Component
 
     public function render()
     {
+        $user = Auth::user();
+
         $teams = Team::query()
-            ->whereHas('users', function ($query) {
-                $query->where('users.id', Auth::id());
+            ->when($user->role !== 'admin', function ($query) {
+                // Si pas admin du site, filtrer par appartenance à l'équipe
+                $query->whereHas('users', function ($q) {
+                    $q->where('users.id', Auth::id());
+                });
             })
             ->when($this->search, function ($query) {
                 $search = "%{$this->search}%";

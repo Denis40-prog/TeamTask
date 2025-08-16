@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Team;
 use App\Models\TeamUser;
+use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +47,15 @@ class Dashboard extends Component
 
     public function render()
     {
-        $teams = Auth::user()->teams()->get();
+        $user = Auth::user();
+
+        // Si c'est l'admin du site, il voit toutes les équipes
+        if ($user->role === User::ROLE_ADMIN) {
+            $teams = Team::all();
+        } else {
+            // Sinon, seulement ses équipes
+            $teams = $user->teams()->get();
+        }
 
         return view('livewire.dashboard', [
             'teams' => $teams

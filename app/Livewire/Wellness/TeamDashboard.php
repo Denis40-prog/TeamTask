@@ -19,16 +19,12 @@ class TeamDashboard extends Component
     {
         $this->team = $team;
 
-        // membres visibles = membres de l'équipe
+        // Récupérer tous les membres réels de l'équipe (ceux dans team_user)
         $this->members = $team->users()
-        ->select(
-            'users.id as id',
-            'users.name',
-            'users.email'
-        )
-        ->orderBy('users.name')
-        ->get()
-        ->toArray();
+            ->select('users.id as id', 'users.name', 'users.email')
+            ->orderBy('users.name')
+            ->get()
+            ->toArray();
 
         // plage par défaut : 30 derniers jours
         $from = Carbon::now()->subDays(30)->startOfDay();
@@ -56,6 +52,6 @@ class TeamDashboard extends Component
 
     public function render()
     {
-        return view('livewire.wellness.team-dashboard')->title("Suivi météo — {$this->team->name}");
+        return view('livewire.wellness.team-dashboard');
     }
 }

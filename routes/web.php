@@ -90,6 +90,11 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/wellness/suivi/team/{team}/member/{user}', MemberDetail::class)
         ->middleware('can:viewWellnessForTeam,team')
         ->name('wellness.followup.team.member');
+
+    // Administration des utilisateurs (réservé aux admins du site)
+    Route::get('/admin/users', \App\Livewire\Admin\UserManagement::class)
+        ->middleware('can:manageUsers')
+        ->name('admin.users');
 });
 
 require __DIR__.'/auth.php';

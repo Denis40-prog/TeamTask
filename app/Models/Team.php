@@ -18,7 +18,40 @@ class Team extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
+    }
+
+    /**
+     * Get team admins
+     */
+    public function admins()
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->wherePivot('role', TeamUser::TEAM_ROLE_ADMIN);
+    }
+
+    /**
+     * Get team RH users
+     */
+    public function rhUsers()
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->wherePivot('role', TeamUser::TEAM_ROLE_RH);
+    }
+
+    /**
+     * Get users who can access wellness surveys (admin or RH)
+     */
+    public function wellnessAccessUsers()
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->whereIn('team_user.role', [TeamUser::TEAM_ROLE_ADMIN, TeamUser::TEAM_ROLE_RH]);
     }
 
     public function projects()
