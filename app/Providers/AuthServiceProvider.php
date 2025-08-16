@@ -43,5 +43,29 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manageUsers', function (User $user) {
             return $user->role === User::ROLE_ADMIN;
         });
+
+        // =====================================
+        // PERMISSIONS DE SUPPRESSION
+        // =====================================
+
+        // Permission pour supprimer une équipe
+        Gate::define('deleteTeam', function (User $user, Team $team) {
+            return $user->canDeleteTeam($team);
+        });
+
+        // Permission pour supprimer un projet
+        Gate::define('deleteProject', function (User $user, $project) {
+            return $user->canDeleteProject($project);
+        });
+
+        // Permission pour supprimer une tâche
+        Gate::define('deleteTask', function (User $user, $task) {
+            return $user->canDeleteTask($task);
+        });
+
+        // Permission pour supprimer un commentaire
+        Gate::define('deleteComment', function (User $user, $comment) {
+            return $user->canDeleteComment($comment);
+        });
     }
 }

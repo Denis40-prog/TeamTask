@@ -101,4 +101,70 @@ trait HasTeamPermissions
 
         return $permissionMap[$permission] ?? collect();
     }
+
+    // =====================================
+    // PERMISSIONS DE SUPPRESSION
+    // =====================================
+
+    /**
+     * Check if user can delete a team
+     */
+    public function canDeleteTeam(Team $team): bool
+    {
+        if ($this->isAdmin()) {
+            return true; // Site admin can delete any team
+        }
+
+        return $this->isTeamAdminFor($team);
+    }
+
+    /**
+     * Check if user can delete a project
+     */
+    public function canDeleteProject(\App\Models\Project $project): bool
+    {
+        if ($this->isAdmin()) {
+            return true; // Site admin can delete any project
+        }
+
+        return $this->isTeamAdminFor($project->team);
+    }
+
+    /**
+     * Check if user can delete a task
+     */
+    public function canDeleteTask(\App\Models\Task $task): bool
+    {
+        if ($this->isAdmin()) {
+            return true; // Site admin can delete any task
+        }
+
+        return $this->isTeamAdminFor($task->project->team);
+    }
+
+    /**
+     * Check if user can delete a comment
+     */
+    public function canDeleteComment(\App\Models\Comment $comment): bool
+    {
+        // Si l'utilisateur est l'auteur du commentaire, il peut le supprimer
+        if ($comment->user_id === $this->id) {
+            return true;
+        }
+
+        // Site admin peut supprimer n'importe quel commentaire
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Team admin peut supprimer les commentaires dans son équipe
+        $team = null;
+        if ($comment->isTaskComment()) {
+            $team = $comment->task->project->team;
+        } elseif ($comment->isProjectComment()) {
+            $team = $comment->project->team;
+        }
+
+        return $team ? $this->isTeamAdminFor($team) : false;
+    }
 }

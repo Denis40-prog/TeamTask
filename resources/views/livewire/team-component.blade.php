@@ -42,7 +42,15 @@
                     <div class="flex space-x-2">
                         <button class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-sm">Voir</button>
                         <button class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 text-sm">Modifier</button>
-                        <button class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm">Supprimer</button>
+                        @can('deleteTeam', $team)
+                            <button
+                                wire:click="deleteTeam({{ $team->id }})"
+                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible.')"
+                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                            >
+                                Supprimer
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>
