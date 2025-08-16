@@ -211,46 +211,66 @@
         <!-- Projects Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($projects as $project)
-                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-lg"
-                     onclick="window.location.href='/projects/{{ $project->id }}/tasks'">
+                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-semibold text-slate-800 dark:text-white">{{ $project->name }}</h3>
-                        <svg class="w-3 h-3 text-slate-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                        <h3 class="text-xl font-semibold text-slate-800 dark:text-white cursor-pointer"
+                            onclick="window.location.href='/projects/{{ $project->id }}/tasks'">
+                            {{ $project->name }}
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            @can('deleteProject', $project)
+                                <button
+                                    wire:click="deleteProject({{ $project->id }})"
+                                    onclick="event.stopPropagation(); return confirm('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.')"
+                                    class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
+                                    title="Supprimer le projet"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            @endcan
+                            <svg class="w-3 h-3 text-slate-400 dark:text-gray-300 cursor-pointer"
+                                 onclick="window.location.href='/projects/{{ $project->id }}/tasks'"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
                     </div>
-                    @if($project->description)
-                        <p class="text-slate-600 dark:text-gray-300 mb-4 text-sm">{{ Str::limit($project->description, 100) }}</p>
-                    @endif
-                    <div class="text-sm text-slate-600 dark:text-gray-300">
-                        @if($project->start_date || $project->end_date)
-                            <p class="mb-2">
-                                <span class="font-medium">Période:</span>
-                                @if($project->start_date)
-                                    {{ $project->start_date->format('d/m/Y') }}
-                                @else
-                                    Non définie
-                                @endif
-                                @if($project->end_date)
-                                    - {{ $project->end_date->format('d/m/Y') }}
-                                @endif
-                            </p>
+                    <div onclick="window.location.href='/projects/{{ $project->id }}/tasks'" class="cursor-pointer">
+                        @if($project->description)
+                            <p class="text-slate-600 dark:text-gray-300 mb-4 text-sm">{{ Str::limit($project->description, 100) }}</p>
                         @endif
-                        <p class="mb-2">
-                            <span class="font-medium">Statut:</span>
-                            <span class="px-2 py-1 rounded text-xs {{ $project->status === 'active' ? 'bg-emerald-600 dark:bg-green-600 text-white' : 'bg-slate-400 dark:bg-gray-600 text-white' }}">
-                                {{ $project->status === 'active' ? 'Actif' : 'Archivé' }}
-                            </span>
-                        </p>
-                        <p class="mb-2">
-                            <span class="font-medium">Tâches:</span> {{ $project->tasks()->count() }}
-                        </p>
-                        <p class="mb-2">
-                            <span class="font-medium">Propriétaire:</span> {{ $project->owner->name }}
-                        </p>
-                        <p class="text-xs text-slate-500 dark:text-gray-400">
-                            Créé le {{ $project->created_at->format('d/m/Y') }}
-                        </p>
+                        <div class="text-sm text-slate-600 dark:text-gray-300">
+                            @if($project->start_date || $project->end_date)
+                                <p class="mb-2">
+                                    <span class="font-medium">Période:</span>
+                                    @if($project->start_date)
+                                        {{ $project->start_date->format('d/m/Y') }}
+                                    @else
+                                        Non définie
+                                    @endif
+                                    @if($project->end_date)
+                                        - {{ $project->end_date->format('d/m/Y') }}
+                                    @endif
+                                </p>
+                            @endif
+                            <p class="mb-2">
+                                <span class="font-medium">Statut:</span>
+                                <span class="px-2 py-1 rounded text-xs {{ $project->status === 'active' ? 'bg-emerald-600 dark:bg-green-600 text-white' : 'bg-slate-400 dark:bg-gray-600 text-white' }}">
+                                    {{ $project->status === 'active' ? 'Actif' : 'Archivé' }}
+                                </span>
+                            </p>
+                            <p class="mb-2">
+                                <span class="font-medium">Tâches:</span> {{ $project->tasks()->count() }}
+                            </p>
+                            <p class="mb-2">
+                                <span class="font-medium">Propriétaire:</span> {{ $project->owner->name }}
+                            </p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400">
+                                Créé le {{ $project->created_at->format('d/m/Y') }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             @empty

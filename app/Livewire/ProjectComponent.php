@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectComponent extends Component
 {
@@ -29,7 +30,9 @@ class ProjectComponent extends Component
             $query->withPivot('role');
         }])->findOrFail($teamId);
 
-        if (! $this->team->users->pluck('id')->contains(Auth::id())) {
+        // Vérifier l'accès : admin du site OU membre de l'équipe
+        $user = Auth::user();
+        if ($user->role !== 'admin' && !$this->team->users->pluck('id')->contains(Auth::id())) {
             abort(403, 'Vous n\'êtes pas membre de cette équipe.');
         }
 
@@ -82,6 +85,12 @@ class ProjectComponent extends Component
     private function checkIfTeamAdmin()
     {
         $currentUser = Auth::user();
+
+        // Admin du site a tous les droits
+        if ($currentUser->role === 'admin') {
+            $this->isTeamAdmin = true;
+            return;
+        }
 
         if ($this->team->owner_id == $currentUser->id) {
             $this->isTeamAdmin = true;
@@ -162,6 +171,23 @@ class ProjectComponent extends Component
 
         $user = User::find($userId);
         $this->dispatch('flash', type: 'success', text: $user->name . ' n\'est plus administrateur de l\'équipe !');
+    }
+
+    public function deleteProject(Project $project)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteProject', $project)) {
+            $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer ce projet.');
+            return;
+        }
+
+        try {
+            $projectName = $project->name;
+            $project->delete();
+            $this->dispatch('flash', type: 'success', text: 'Le projet "' . $projectName . '" a été supprimé avec succès.');
+        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression du projet.');
+        }
     }
 
     public function render()
