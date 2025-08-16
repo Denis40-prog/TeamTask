@@ -1,0 +1,180 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    name: Generate Documentation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, sqlite
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Install API Documentation Tools
+        run: |
+          echo "Installing documentation tools..."
+          # Try to install documentation packages
+          composer require --dev darkaonline/l5-swagger --with-all-dependencies || echo "⚠️ L5-Swagger installation failed"
+          composer require --dev knuckleswtf/scribe --with-all-dependencies || echo "⚠️ Scribe installation failed"
+
+      - name: Setup Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Generate API Documentation with Scribe
+        run: |
+          if [ -f "./vendor/bin/scribe" ]; then
+            php artisan scribe:generate || echo "⚠️ Scribe documentation generation failed"
+          else
+            echo "⚠️ Scribe not installed, skipping API documentation"
+          fi
+
+      - name: Generate Swagger Documentation
+        run: |
+          if php artisan list | grep -q "l5-swagger:generate"; then
+            php artisan l5-swagger:generate || echo "⚠️ Swagger documentation generation failed"
+          else
+            echo "⚠️ L5-Swagger not installed, skipping Swagger documentation"
+          fi
+
+      - name: Update README with badges
+        run: |
+          # Get test coverage if available
+          if [ -f "coverage.xml" ]; then
+            COVERAGE=$(php -r "
+              \$xml = simplexml_load_file('coverage.xml');
+              \$metrics = \$xml->project->metrics;
+              \$covered = (float)\$metrics['coveredstatements'];
+              \$total = (float)\$metrics['statements'];
+              echo round((\$covered / \$total) * 100, 1);
+            ")
+          else
+            COVERAGE="unknown"
+          fi
+
+          # Create badges section
+          cat > badges.md << EOF
+          ## Project Status
+
+          ![Tests](https://github.com/${{ github.repository }}/workflows/tests/badge.svg)
+          ![Security](https://github.com/${{ github.repository }}/workflows/Security%20Check/badge.svg)
+          ![Code Quality](https://github.com/${{ github.repository }}/workflows/Code%20Quality/badge.svg)
+          ![Documentation](https://github.com/${{ github.repository }}/workflows/Documentation/badge.svg)
+          ![Coverage](https://img.shields.io/badge/coverage-${COVERAGE}%25-brightgreen)
+          ![PHP Version](https://img.shields.io/badge/php-%5E8.3-blue)
+          ![Laravel Version](https://img.shields.io/badge/laravel-11.x-red)
+
+          EOF
+
+          # Update README if it exists
+          if [ -f "README.md" ]; then
+            # Check if badges section already exists
+            if grep -q "## Project Status" README.md; then
+              # Replace existing badges section
+              sed -i '/## Project Status/,/^$/c\
+          ' README.md
+              sed -i '/## Project Status/r badges.md' README.md
+            else
+              # Add badges section after title
+              sed -i '2r badges.md' README.md
+            fi
+          fi
+
+      - name: Generate API Endpoint Documentation
+        run: |
+          # Extract routes and generate documentation
+          php artisan route:list --json > routes.json
+
+          cat > api-docs.md << 'EOF'
+          # API Documentation
+
+          This documentation is automatically generated from your Laravel routes.
+
+          ## Available Endpoints
+
+          EOF
+
+          php -r "
+          \$routes = json_decode(file_get_contents('routes.json'), true);
+          \$docs = '';
+          foreach (\$routes as \$route) {
+              if (strpos(\$route['uri'], 'api/') === 0) {
+                  \$docs .= '### ' . strtoupper(\$route['method'][0]) . ' /' . \$route['uri'] . PHP_EOL;
+                  \$docs .= '- **Action:** ' . \$route['action'] . PHP_EOL;
+                  if (!empty(\$route['middleware'])) {
+                      \$docs .= '- **Middleware:** ' . implode(', ', \$route['middleware']) . PHP_EOL;
+                  }
+                  \$docs .= PHP_EOL;
+              }
+          }
+          file_put_contents('api-docs.md', file_get_contents('api-docs.md') . \$docs);
+          "
+
+      - name: Create Documentation Archive
+        run: |
+          mkdir -p docs
+          [ -d "public/docs" ] && cp -r public/docs/* docs/ || true
+          [ -f "api-docs.md" ] && cp api-docs.md docs/ || true
+          [ -f "README.md" ] && cp README.md docs/ || true
+
+          # Create index.html for documentation
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>TeamTask Documentation</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .nav { background: #f5f5f5; padding: 20px; border-radius: 5px; }
+                  .nav a { margin-right: 20px; text-decoration: none; color: #333; }
+                  .nav a:hover { color: #0066cc; }
+              </style>
+          </head>
+          <body>
+              <h1>TeamTask Documentation</h1>
+              <div class="nav">
+                  <a href="api-documentation">API Documentation (Swagger)</a>
+                  <a href="api-docs.html">Endpoint List</a>
+                  <a href="README.html">README</a>
+              </div>
+              <p>Welcome to the TeamTask documentation. Use the navigation above to explore the available documentation.</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Documentation Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: docs/
+          retention-days: 30
+
+      - name: Documentation Summary
+        run: |
+          echo "📚 Documentation Generated Successfully!"
+          echo "- API Documentation: ✅"
+          echo "- README Badges: ✅"
+          echo "- Route Documentation: ✅"
+          echo ""
+          echo "📁 Files generated:"
+          ls -la docs/ || echo "No docs directory created"

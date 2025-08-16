@@ -53,7 +53,7 @@ it('affiche les projets de la team et calcule isAdmin', function () {
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
         ->assertStatus(200)
-        ->assertSet('isAdmin', true)
+        ->assertSet('isTeamAdmin', true)
         ->assertSee($team->name)
         ->assertSee(Project::where('team_id', $team->id)->first()->name)
         ->assertDontSee(Project::where('team_id', '!=', $team->id)->first()->name ?? '');
@@ -115,7 +115,7 @@ it('calcule isAdmin=false pour un simple membre et cache les actions admin', fun
     $other = $others[0];
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
-        ->assertSet('isAdmin', false)
+        ->assertSet('isTeamAdmin', false)
         // On ne voit pas le bouton "Supprimer" des membres
         ->assertDontSee('Supprimer')
         // On ne voit pas le bouton "Ajouter" (section admin)
