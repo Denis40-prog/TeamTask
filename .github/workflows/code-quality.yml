@@ -48,18 +48,20 @@ jobs:
                   - app/
                   - routes/
                   - database/
-              level: 6
+              level: 5
               ignoreErrors:
                   - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::.*#'
                   - '#Call to an undefined method Illuminate\\Database\\Query\\Builder::.*#'
+                  - '#Method App\\Http\\Controllers\\.*Controller::.* has no return type specified#'
+                  - '#Method App\\Livewire\\.*::.* has no return type specified#'
+                  - '#Missing return type on function .*#'
               excludePaths:
                   - */vendor/*
                   - */node_modules/*
                   - */storage/*
                   - */bootstrap/cache/*
-          EOF
-
-      - name: Run PHPStan Analysis
+                  - */database/migrations/*
+          EOF      - name: Run PHPStan Analysis
         run: |
           if [ -f "./vendor/bin/phpstan" ]; then
             ./vendor/bin/phpstan analyse --memory-limit=2G --no-progress

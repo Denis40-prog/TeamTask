@@ -35,7 +35,8 @@ jobs:
         run: |
           # Use Symfony CLI security checker (modern replacement)
           curl -sS https://get.symfony.com/cli/installer | bash
-          ~/.symfony5/bin/symfony security:check composer.lock
+          export PATH="$HOME/.symfony5/bin:$PATH"
+          ~/.symfony5/bin/symfony local:check:security --dir=. --format=text
 
   security-npm:
     runs-on: ubuntu-latest
