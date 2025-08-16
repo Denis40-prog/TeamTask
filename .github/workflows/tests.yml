@@ -29,7 +29,7 @@ jobs:
           # Generate APP_KEY for testing
           APP_KEY=$(php -r "echo 'base64:' . base64_encode(random_bytes(32));")
           echo "Generated APP_KEY: $APP_KEY"
-          
+
           # Create fresh .env.testing with proper APP_KEY
           cat > .env.testing << EOF
           APP_ENV=testing
@@ -47,21 +47,24 @@ jobs:
 
           LOG_CHANNEL=null
           EOF
-          
+
           # Verify the configuration
           echo "Updated .env.testing file:"
           cat .env.testing
+
+      - name: Setup database
+        run: |
+          # Create database directory
+          mkdir -p database
           
-          # Clear Laravel caches to ensure fresh config
-          php artisan config:clear
-          php artisan cache:clear
+          # Create empty SQLite file for any non-memory operations
+          touch database/database.sqlite
           
-          # Verify the APP_KEY is loaded in Laravel
-          echo "Testing APP_KEY loading:"
-          php artisan tinker --execute="echo 'Laravel APP_KEY: ' . config('app.key') . PHP_EOL;"
+          # Clear any existing configuration cache
+          php artisan config:clear --env=testing || echo "Config cleared"
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: APP_ENV=testing php artisan migrate --force --env=testing
 
       - name: Run tests
-        run: ./vendor/bin/pest --parallel --coverage
+        run: APP_ENV=testing ./vendor/bin/pest --parallel --coverage
