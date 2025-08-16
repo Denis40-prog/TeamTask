@@ -24,6 +24,18 @@ jobs:
       - name: Install deps
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
       - name: App key + env
         run: |
           # Generate APP_KEY for testing
