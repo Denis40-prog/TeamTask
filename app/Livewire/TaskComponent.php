@@ -43,8 +43,9 @@ class TaskComponent extends Component
         $this->projectId = $projectId;
         $this->project = Project::with('team')->findOrFail($projectId);
 
-        // Vérifier que l'utilisateur fait partie de l'équipe
-        if (!$this->project->team->users->contains(Auth::id())) {
+        // Vérifier l'accès : admin du site OU membre de l'équipe
+        $user = Auth::user();
+        if ($user->role !== 'admin' && !$this->project->team->users->contains(Auth::id())) {
             abort(403, 'Vous n\'avez pas accès à ce projet.');
         }
     }

@@ -29,7 +29,9 @@ class ProjectComponent extends Component
             $query->withPivot('role');
         }])->findOrFail($teamId);
 
-        if (! $this->team->users->pluck('id')->contains(Auth::id())) {
+        // Vérifier l'accès : admin du site OU membre de l'équipe
+        $user = Auth::user();
+        if ($user->role !== 'admin' && !$this->team->users->pluck('id')->contains(Auth::id())) {
             abort(403, 'Vous n\'êtes pas membre de cette équipe.');
         }
 
@@ -82,6 +84,12 @@ class ProjectComponent extends Component
     private function checkIfTeamAdmin()
     {
         $currentUser = Auth::user();
+
+        // Admin du site a tous les droits
+        if ($currentUser->role === 'admin') {
+            $this->isTeamAdmin = true;
+            return;
+        }
 
         if ($this->team->owner_id == $currentUser->id) {
             $this->isTeamAdmin = true;

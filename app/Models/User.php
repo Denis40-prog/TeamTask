@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use App\Traits\HasTeamPermissions;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTeamPermissions;
     /**
      * The available user roles.
      */
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
-    public const ROLE_MANAGER = 'manager';
 
     /**
      * Check if the user is an admin.
@@ -33,13 +33,6 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === self::ROLE_USER;
-    }
-
-    /**
-     * Check if the user is a manager user.
-     */
-    public function isManager(): bool {
-        return $this->role === self::ROLE_MANAGER;
     }
 
     /**
@@ -79,7 +72,66 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class)->withTimestamps();
+        return $this->belongsToMany(Team::class)->withPivot('role')->withTimestamps();
+    }
+
+    /**
+     * Get teams where user is admin
+     */
+    public function adminTeams()
+    {
+        return $this->belongsToMany(Team::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->wherePivot('role', TeamUser::TEAM_ROLE_ADMIN);
+    }
+
+    /**
+     * Get teams where user is RH
+     */
+    public function rhTeams()
+    {
+        return $this->belongsToMany(Team::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->wherePivot('role', TeamUser::TEAM_ROLE_RH);
+    }
+
+    /**
+     * Get teams where user can access wellness surveys (admin or RH)
+     */
+    public function wellnessAccessTeams()
+    {
+        return $this->belongsToMany(Team::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->whereIn('team_user.role', [TeamUser::TEAM_ROLE_ADMIN, TeamUser::TEAM_ROLE_RH]);
+    }
+
+    /**
+     * Check if user can access wellness survey for a specific team
+     */
+    public function canAccessWellnessForTeam(Team $team): bool
+    {
+        if ($this->isAdmin()) {
+            return true; // Site admin has access to everything
+        }
+
+        $teamUser = $this->teams()->where('teams.id', $team->id)->first();
+        return $teamUser && in_array($teamUser->pivot->role, [TeamUser::TEAM_ROLE_ADMIN, TeamUser::TEAM_ROLE_RH]);
+    }
+
+    /**
+     * Check if user can manage members of a specific team
+     */
+    public function canManageTeamMembers(Team $team): bool
+    {
+        if ($this->isAdmin()) {
+            return true; // Site admin can manage all teams
+        }
+
+        $teamUser = $this->teams()->where('teams.id', $team->id)->first();
+        return $teamUser && $teamUser->pivot->role === TeamUser::TEAM_ROLE_ADMIN;
     }
 
     public function ownedTeams()
