@@ -26,39 +26,39 @@ jobs:
 
       - name: App key + env
         run: |
-          # Create a fresh .env for testing with proper APP_KEY
+          # Generate APP_KEY for testing
           APP_KEY=$(php -r "echo 'base64:' . base64_encode(random_bytes(32));")
-          cat > .env << EOF
-          APP_NAME=TeamTask
+          echo "Generated APP_KEY: $APP_KEY"
+          
+          # Create fresh .env.testing with proper APP_KEY
+          cat > .env.testing << EOF
           APP_ENV=testing
           APP_KEY=${APP_KEY}
           APP_DEBUG=true
-          APP_TIMEZONE=UTC
           APP_URL=http://localhost
 
           DB_CONNECTION=sqlite
           DB_DATABASE=:memory:
 
+          CACHE_STORE=array
           SESSION_DRIVER=array
           QUEUE_CONNECTION=sync
-          CACHE_STORE=array
           MAIL_MAILER=array
 
-          BCRYPT_ROUNDS=4
+          LOG_CHANNEL=null
           EOF
-
-          # Verify configuration
-          echo "Generated .env file:"
-          cat .env
           
-          # Clear all Laravel caches and force config reload
+          # Verify the configuration
+          echo "Updated .env.testing file:"
+          cat .env.testing
+          
+          # Clear Laravel caches to ensure fresh config
           php artisan config:clear
           php artisan cache:clear
-          php artisan config:cache
           
-          # Verify the APP_KEY is properly loaded
-          echo "Checking APP_KEY in Laravel config:"
-          php artisan tinker --execute="echo 'APP_KEY: ' . config('app.key');"
+          # Verify the APP_KEY is loaded in Laravel
+          echo "Testing APP_KEY loading:"
+          php artisan tinker --execute="echo 'Laravel APP_KEY: ' . config('app.key') . PHP_EOL;"
 
       - name: Run migrations
         run: php artisan migrate --force
