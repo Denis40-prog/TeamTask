@@ -50,8 +50,15 @@ jobs:
           # Verify configuration
           echo "Generated .env file:"
           cat .env
-
+          
+          # Clear all Laravel caches and force config reload
           php artisan config:clear
+          php artisan cache:clear
+          php artisan config:cache
+          
+          # Verify the APP_KEY is properly loaded
+          echo "Checking APP_KEY in Laravel config:"
+          php artisan tinker --execute="echo 'APP_KEY: ' . config('app.key');"
 
       - name: Run migrations
         run: php artisan migrate --force
