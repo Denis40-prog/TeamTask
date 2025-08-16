@@ -6,6 +6,7 @@ use App\Models\Team;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TeamComponent extends Component
 {
@@ -41,6 +42,23 @@ class TeamComponent extends Component
             $this->sortDirection = 'asc';
         }
         $this->resetPage();
+    }
+
+    public function deleteTeam(Team $team)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteTeam', $team)) {
+            session()->flash('error', 'Vous n\'avez pas les permissions pour supprimer cette équipe.');
+            return;
+        }
+
+        try {
+            // Supprimer l'équipe et toutes ses relations
+            $team->delete();
+            session()->flash('success', 'L\'équipe "' . $team->name . '" a été supprimée avec succès.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Une erreur est survenue lors de la suppression de l\'équipe.');
+        }
     }
 
     public function render()

@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Comment;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskComponent extends Component
 {
@@ -146,7 +147,7 @@ class TaskComponent extends Component
             $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';
         } else {
             $this->sortField = $field;
-            $this->sortDir = $field === 'priority' ? 'desc' : 'desc';
+            $this->sortDir = 'desc';
         }
     }
 
@@ -158,6 +159,39 @@ class TaskComponent extends Component
         $this->filterDateTo   = null;
         $this->sortField      = 'created_at';
         $this->sortDir        = 'desc';
+    }
+
+    public function deleteTask(Task $task)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteTask', $task)) {
+            $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer cette tâche.');
+            return;
+        }
+
+        try {
+            $taskTitle = $task->title;
+            $task->delete();
+            $this->dispatch('flash', type: 'success', text: 'La tâche "' . $taskTitle . '" a été supprimée avec succès.');
+        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression de la tâche.');
+        }
+    }
+
+    public function deleteComment(Comment $comment)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteComment', $comment)) {
+            $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer ce commentaire.');
+            return;
+        }
+
+        try {
+            $comment->delete();
+            $this->dispatch('flash', type: 'success', text: 'Le commentaire a été supprimé avec succès.');
+        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression du commentaire.');
+        }
     }
 
     public function render()

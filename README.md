@@ -33,7 +33,12 @@
 - Ajout de commentaires sur un projet (associés à une tâche système si nécessaire)
 - Affichage des commentaires récents avec auteur et date
 
-### 🎨 Interface
+### �️ Météo des émotions
+- Suivi du bien-être de l'équipe via des questionnaires
+- Visualisation de l'état émotionnel des membres
+- Historique des réponses pour analyse des tendances
+
+### �🎨 Interface
 - UI responsive avec **Tailwind CSS**
 - Composants dynamiques Livewire pour une interaction fluide
 - Affichage clair des priorités et statuts par couleurs
@@ -117,9 +122,6 @@ sail npm run dev
 - Tests unitaires et fonctionnels
 - Documentation technique & utilisateur complète
 - Mise en production
-
-## Suivi de la météo des émotions
-- Questionnaire
 
 ## Mise en concurrence hebdomadaire
 - Challenge sous forme de mission hebdomadaire 

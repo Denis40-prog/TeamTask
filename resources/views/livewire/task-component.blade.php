@@ -301,6 +301,14 @@
                                             class="bg-emerald-600 hover:bg-emerald-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-2 py-1 rounded text-xs transition-colors cursor-pointer">
                                             Modifier
                                         </button>
+                                        @can('deleteTask', $task)
+                                            <button
+                                                wire:click="deleteTask({{ $task->id }})"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.')"
+                                                class="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white px-2 py-1 rounded text-xs transition-colors cursor-pointer">
+                                                Supprimer
+                                            </button>
+                                        @endcan
                                     </div>
                                 </div>
                                 @if($task->description)
@@ -390,7 +398,19 @@
                         <div class="bg-slate-50 border border-slate-200 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="font-semibold text-slate-800 dark:text-white">{{ $comment->user->name }}</span>
-                                <span class="text-xs text-slate-500 dark:text-gray-400">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-slate-500 dark:text-gray-400">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                    @can('deleteComment', $comment)
+                                        <button
+                                            wire:click="deleteComment({{ $comment->id }})"
+                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')"
+                                            class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs"
+                                            title="Supprimer le commentaire"
+                                        >
+                                            🗑️
+                                        </button>
+                                    @endcan
+                                </div>
                             </div>
                             <p class="text-slate-600 dark:text-gray-300 text-sm">{{ $comment->content }}</p>
                         </div>

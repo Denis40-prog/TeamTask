@@ -69,27 +69,47 @@
         <!-- Teams Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($teams as $team)
-                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-lg"
-                     onclick="window.location.href='/projects/{{ $team->id }}'">
+                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-semibold text-slate-800 dark:text-white">{{ $team->name }}</h3>
-                        <svg class="w-5 h-5 text-slate-400 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                        <h3 class="text-xl font-semibold text-slate-800 dark:text-white cursor-pointer"
+                            onclick="window.location.href='/projects/{{ $team->id }}'">
+                            {{ $team->name }}
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            @can('deleteTeam', $team)
+                                <button
+                                    wire:click="deleteTeam({{ $team->id }})"
+                                    onclick="event.stopPropagation(); return confirm('Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible et supprimera tous les projets, tâches et commentaires associés.')"
+                                    class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
+                                    title="Supprimer l'équipe"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            @endcan
+                            <svg class="w-5 h-5 text-slate-400 dark:text-gray-400 cursor-pointer"
+                                 onclick="window.location.href='/projects/{{ $team->id }}'"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
                     </div>
-                    @if($team->description)
-                        <p class="text-slate-600 dark:text-gray-300 text-sm mb-3">{{ Str::limit($team->description, 100) }}</p>
-                    @endif
-                    <div class="text-sm text-slate-600 dark:text-gray-400">
-                        <p class="mb-2">
-                            <span class="font-medium">Membres:</span> {{ $team->users()->count() }}
-                        </p>
-                        <p class="mb-2">
-                            <span class="font-medium">Projets:</span> {{ $team->projects()->count() }}
-                        </p>
-                        <p class="text-xs text-slate-500 dark:text-gray-500">
-                            Créée le {{ $team->created_at->format('d/m/Y') }}
-                        </p>
+                    <div onclick="window.location.href='/projects/{{ $team->id }}'" class="cursor-pointer">
+                        @if($team->description)
+                            <p class="text-slate-600 dark:text-gray-300 text-sm mb-3">{{ Str::limit($team->description, 100) }}</p>
+                        @endif
+                        <div class="text-sm text-slate-600 dark:text-gray-400">
+                            <p class="mb-2">
+                                <span class="font-medium">Membres:</span> {{ $team->users()->count() }}
+                            </p>
+                            <p class="mb-2">
+                                <span class="font-medium">Projets:</span> {{ $team->projects()->count() }}
+                            </p>
+                            <p class="text-xs text-slate-500 dark:text-gray-500">
+                                Créée le {{ $team->created_at->format('d/m/Y') }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             @empty
