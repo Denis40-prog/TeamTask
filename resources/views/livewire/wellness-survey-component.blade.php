@@ -155,15 +155,15 @@
 
         {{-- Presets --}}
         <div class="flex flex-wrap gap-2">
-            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setGreatDay">
                 💚 Journée au top
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setAverageDay">
                 🧩 Moyen + motivation
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setDifficultDay">
                 🫶 Journée difficile
             </button>

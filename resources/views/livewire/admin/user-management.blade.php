@@ -9,7 +9,7 @@
             </div>
 
             <!-- Filtres -->
-            <div class="bg-white dark:bg-slate-800 shadow rounded-lg mb-6">
+            <div class="bg-white dark:bg-zinc-900 shadow rounded-lg mb-6">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-slate-900 dark:text-white mb-4">Filtres</h2>
 
@@ -20,8 +20,8 @@
                                 Nom d'utilisateur
                             </label>
                             <input wire:model.live="search" type="text" id="search"
-                                   class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Rechercher par nom...">
+                                class="mt-1 block w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-zinc-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 focus:outline-none transition placeholder-gray-400 dark:placeholder-gray-500 text-sm md:text-base"
+                                placeholder="Rechercher par nom...">
                         </div>
 
                         <!-- Filtre par email -->
@@ -30,7 +30,7 @@
                                 Email
                             </label>
                             <input wire:model.live="emailFilter" type="email" id="emailFilter"
-                                   class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                   class="mt-1 block w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-zinc-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 focus:outline-none transition placeholder-gray-400 dark:placeholder-gray-500 text-sm md:text-base"
                                    placeholder="Rechercher par email...">
                         </div>
 
@@ -40,7 +40,7 @@
                                 Équipe
                             </label>
                             <select wire:model.live="teamFilter" id="teamFilter"
-                                    class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="mt-1 block w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-zinc-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 focus:outline-none transition placeholder-gray-400 dark:placeholder-gray-500 text-sm md:text-base">
                                 <option value="">Toutes les équipes</option>
                                 @foreach($teams as $team)
                                     <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -54,7 +54,7 @@
                                 Rôle
                             </label>
                             <select wire:model.live="roleFilter" id="roleFilter"
-                                    class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="mt-1 block w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-zinc-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 focus:outline-none transition placeholder-gray-400 dark:placeholder-gray-500 text-sm md:text-base">
                                 <option value="">Tous les rôles</option>
                                 <option value="admin">Administrateur</option>
                                 <option value="user">Utilisateur</option>
@@ -64,7 +64,7 @@
 
                     <div class="mt-4">
                         <button wire:click="clearFilters"
-                                class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                class="bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
                             Effacer les filtres
                         </button>
                     </div>
@@ -74,8 +74,8 @@
             <!-- Tableau des utilisateurs -->
             <div class="bg-white dark:bg-slate-800 shadow rounded-lg">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                        <thead class="bg-slate-50 dark:bg-slate-900">
+                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 border dark:border-zinc-900">
+                        <thead class="bg-slate-50 dark:bg-zinc-900">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left">
                                     <button wire:click="sortBy('name')"
@@ -139,9 +139,9 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                        <tbody class="bg-white dark:bg-zinc-800 divide-y divide-slate-200 dark:divide-slate-700">
                             @forelse($users as $user)
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-zinc-700">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
@@ -222,7 +222,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="bg-white dark:bg-slate-800 px-4 py-3 border-t border-slate-200 dark:border-slate-700 sm:px-6">
+                <div class="bg-white dark:bg-zinc-900 px-4 py-3 border-t border-slate-200 dark:border-slate-700 sm:px-6">
                     {{ $users->links() }}
                 </div>
             </div>
