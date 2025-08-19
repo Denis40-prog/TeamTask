@@ -42,7 +42,7 @@
         @endphp
 
         {{-- Sommeil --}}
-        <div class="p-4 rounded-2xl border bg-white dark:bg-gray-900 shadow-sm">
+        <div class="p-4 rounded-2xl border bg-slate-100 dark:bg-zinc-900 shadow-sm">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-lg">😴</span>
@@ -70,7 +70,7 @@
         </div>
 
         {{-- Stress --}}
-        <div class="p-4 rounded-2xl border bg-white dark:bg-gray-900 shadow-sm">
+        <div class="p-4 rounded-2xl border bg-slate-100 dark:bg-zinc-900 shadow-sm">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-lg">🧠</span>
@@ -98,7 +98,7 @@
         </div>
 
         {{-- Courbatures --}}
-        <div class="p-4 rounded-2xl border bg-white dark:bg-gray-900 shadow-sm">
+        <div class="p-4 rounded-2xl border bg-slate-100 dark:bg-zinc-900 shadow-sm">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-lg">💪</span>
@@ -126,7 +126,7 @@
         </div>
 
         {{-- Énergie --}}
-        <div class="p-4 rounded-2xl border bg-white dark:bg-gray-900 shadow-sm">
+        <div class="p-4 rounded-2xl border bg-slate-100 dark:bg-zinc-900 shadow-sm">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-lg">⚡️</span>
@@ -155,15 +155,15 @@
 
         {{-- Presets --}}
         <div class="flex flex-wrap gap-2">
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setGreatDay">
                 💚 Journée au top
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setAverageDay">
                 🧩 Moyen + motivation
             </button>
-            <button type="button" class="rounded-full px-3 py-1 text-xs border hover:bg-gray-50 dark:hover:bg-gray-700"
+            <button type="button" class="rounded-full px-3 py-1 text-xs border bg-slate-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                     wire:click="setDifficultDay">
                 🫶 Journée difficile
             </button>
