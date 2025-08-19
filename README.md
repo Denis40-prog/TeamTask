@@ -13,8 +13,10 @@
 ## 🚀 Fonctionnalités actuelles
 
 ### 📌 Gestion des projets
+- Dashboard affichant les équipes dont fait parti l'utilisateur.
 - Affichage des projets d’une équipe.
 - Description et informations détaillées sur chaque projet.
+- Onglet "Projets" et "Équipes" dépliables.
 
 ### ✅ Gestion des tâches
 - Création de tâches avec :
@@ -33,12 +35,12 @@
 - Ajout de commentaires sur un projet (associés à une tâche système si nécessaire)
 - Affichage des commentaires récents avec auteur et date
 
-### �️ Météo des émotions
+### 🌤️ Météo des émotions
 - Suivi du bien-être de l'équipe via des questionnaires
 - Visualisation de l'état émotionnel des membres
 - Historique des réponses pour analyse des tendances
 
-### �🎨 Interface
+### 🎨 Interface
 - UI responsive avec **Tailwind CSS**
 - Composants dynamiques Livewire pour une interaction fluide
 - Affichage clair des priorités et statuts par couleurs
@@ -57,8 +59,9 @@
 
 ## 📂 Structure du code
 
-- `app/Livewire/TaskComponent.php` → Composant Livewire pour la gestion des tâches et commentaires.
-- `resources/views/livewire/task-component.blade.php` → Vue principale avec gestion affichage/édition/création.
+- `database/migrations/` → création des tables de la base de données.
+- `app/Livewire/` → Composant Livewire pour la gestion des tâches et commentaires.
+- `resources/views/livewire/` → Vue principale avec gestion affichage/édition/création.
 - Routes Laravel dans `web.php`.
 
 ---
@@ -107,14 +110,13 @@ sail npm run dev
 
 ### 📅 À venir
 ## Sidebar dynamique :
-- Onglet "Projets" et "Équipes" dépliables.
 - Réponses imbriquées aux commentaires (système de sous-commentaires avec affichage hiérarchique).
 - Onglet “Activité récente” : suivi chronologique des actions (création/modification de tâches, commentaires, etc.).
 - Refonte profil utilisateur : avatar, bio, préférences, meilleure UX pour la gestion du compte.
 
 ## Gestion avancée des équipes :
 - Invitations par lien
-- Gestion des droits par rôle
+- Meilleure gestion des droits par rôle
 
 ## Système de notifications :
 - Internes (UI)
