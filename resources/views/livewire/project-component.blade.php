@@ -1,5 +1,5 @@
 <div>
-    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white bg-slate-100 dark:bg-transparent">
+    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white dark:bg-transparent">
         <!-- Header -->
         <div class="mb-4">
             <div class="flex items-center justify-between mb-4">
@@ -11,7 +11,7 @@
                     <span class="text-slate-800 dark:text-white">{{ $team->name }}</span>
                 </nav>
                 <a href="/dashboard"
-                   class="bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
+                   class="bg-slate-200 dark:bg-zinc-900 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
@@ -24,7 +24,7 @@
             <div x-data="{ open: false }" class="w-full mb-2">
                 <button
                     @click="open = !open"
-                    class="w-full bg-slate-200 dark:bg-gray-800 text-left text-slate-800 dark:text-white font-semibold py-3 px-4 rounded-lg flex justify-between items-center hover:bg-slate-300 dark:hover:bg-gray-700 transition"
+                    class="w-full bg-slate-100 dark:bg-zinc-900 text-left text-slate-800 dark:text-white font-semibold py-3 px-4 rounded-lg flex justify-between items-center hover:bg-slate-300 dark:hover:bg-gray-700 transition"
                 >
                     <span>Membres de l'équipe ({{ $team->users->count() }})</span>
                     <svg :class="{'transform rotate-180': open}" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,11 +33,11 @@
                 </button>
 
                 <!-- liste des membres -->
-                <div x-show="open" x-transition class="mt-4 bg-slate-50 dark:bg-gray-800 rounded-lg p-4 shadow-inner">
+                <div x-show="open" x-transition class="mt-4 bg-slate-50 dark:bg-zinc-900 rounded-lg p-4 shadow-inner">
                     <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Liste des membres</h2>
                     <ul class="mb-4">
                         @foreach($team->users as $member)
-                            <li class="flex items-center justify-between bg-slate-100 dark:bg-gray-700 p-2 rounded mb-2">
+                            <li class="flex items-center justify-between bg-slate-100 dark:bg-zinc-800 p-2 rounded mb-2">
                             <span>
                                 {{ $member->name }} ({{ $member->email }})
                                 <span class="text-xs text-slate-500 dark:text-gray-400 italic ml-2">
@@ -84,11 +84,11 @@
                                     type="email"
                                     wire:model="newMemberEmail"
                                     placeholder="Email du membre à ajouter"
-                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                                    class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                                 >
                                 <button
                                     wire:click="addMember"
-                                    class="bg-emerald-600 dark:bg-blue-600 hover:bg-emerald-700 dark:hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                                    class="bg-emerald-600 dark:bg-green-600 hover:bg-emerald-700 dark:hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
                                 >
                                     Ajouter
                                 </button>
@@ -105,7 +105,7 @@
             <div class="flex justify-end mt-2 mb-6">
                                 <button
                     wire:click="toggleCreateForm"
-                    class="bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer"
+                    class="bg-slate-200 dark:bg-zinc-900 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer"
                     >
                     {{ $showCreateForm ? 'Annuler' : 'Nouveau projet' }}
                 </button>
@@ -116,7 +116,7 @@
 
         <!-- Create Project Form -->
         @if($showCreateForm)
-            <div class="bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-500 rounded-lg p-6 mb-8 shadow-lg">
+            <div class="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-gray-500 rounded-lg p-6 mb-8 shadow-lg">
                 <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-4">Créer un nouveau projet</h3>
                 <form wire:submit.prevent="createProject">
                     <div class="mb-4">
@@ -127,7 +127,7 @@
                             type="text"
                             id="newProjectName"
                             wire:model="newProjectName"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Entrez le nom du projet"
                             required>
                         @error('newProjectName')
@@ -142,7 +142,7 @@
                             id="newProjectDescription"
                             wire:model="newProjectDescription"
                             rows="3"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Décrivez le projet..."></textarea>
                         @error('newProjectDescription')
                             <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
@@ -157,7 +157,7 @@
                                 type="date"
                                 id="newProjectStartDate"
                                 wire:model="newProjectStartDate"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                                class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             @error('newProjectStartDate')
                                 <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
                             @enderror
@@ -170,7 +170,7 @@
                                 type="date"
                                 id="newProjectEndDate"
                                 wire:model="newProjectEndDate"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                                class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             @error('newProjectEndDate')
                                 <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
                             @enderror
@@ -183,7 +183,7 @@
                         <select
                             id="newProjectStatus"
                             wire:model="newProjectStatus"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             <option value="active">Actif</option>
                             <option value="archived">Archivé</option>
                         </select>
@@ -211,7 +211,7 @@
         <!-- Projects Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($projects as $project)
-                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
+                <div class="bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-semibold text-slate-800 dark:text-white cursor-pointer"
                             onclick="window.location.href='/projects/{{ $project->id }}/tasks'">

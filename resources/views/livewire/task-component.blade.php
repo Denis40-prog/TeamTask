@@ -1,5 +1,5 @@
 <div>
-    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white bg-slate-100 dark:bg-transparent">
+    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white dark:bg-transparent">
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
@@ -15,7 +15,7 @@
                     <span class="text-slate-800 dark:text-white">{{ $project->name }}</span>
                 </nav>
                 <a href="/projects/{{ $project->team_id }}"
-                   class="bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
+                   class="bg-slate-200 dark:bg-zinc-900 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
@@ -32,7 +32,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Tasks Section -->
-            <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6">
+            <div class="bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Tâches</h2>
                     <div class="flex items-center space-x-3">
@@ -49,7 +49,7 @@
 
                 <!-- Create Task Form -->
                 @if($showCreateTaskForm)
-                    <div class="bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-500 rounded-lg p-4 mb-6">
+                    <div class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-gray-500 rounded-lg p-4 mb-6">
                         <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Créer une nouvelle tâche</h3>
                         <form wire:submit.prevent="createTask">
                             <div class="mb-4">
@@ -151,7 +151,7 @@
 
                 <div class="space-y-4">
                     <!-- Filters & Sorting -->
-                    <div class="bg-white border-2 border-slate-200 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4 mb-6">
+                    <div class="bg-white border-2 border-slate-200 dark:bg-zinc-800 dark:border-gray-600 rounded-lg p-4 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <!-- Statut -->
                         <div>
@@ -227,7 +227,7 @@
                     </div>
 
                     @forelse($tasks as $task)
-                        <div class="bg-white border border-slate-200 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4 hover:bg-slate-50 dark:hover:bg-gray-600 transition-colors">
+                        <div class="bg-white border border-slate-200 dark:bg-zinc-800 dark:border-gray-600 rounded-lg p-4 hover:bg-slate-50 dark:hover:bg-gray-600 transition-colors">
                             @if($editingTaskId === $task->id)
                                 <!-- Edit Task Form -->
                                 <form wire:submit.prevent="updateTask">
@@ -362,7 +362,7 @@
             </div>
 
             <!-- Comments Section -->
-            <div class="bg-white border border-slate-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg p-6">
+            <div class="bg-slate-100 border border-slate-200 dark:bg-zinc-900 dark:border-gray-700 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Commentaires</h2>
                     <span class="bg-emerald-600 dark:bg-purple-600 text-white px-3 py-1 rounded-full text-sm">
@@ -371,7 +371,7 @@
                 </div>
 
                 <!-- Add Comment Form -->
-                <div class="bg-slate-50 border-2 border-slate-200 dark:bg-gray-700 dark:border-gray-500 rounded-lg p-4 mb-6">
+                <div class="bg-slate-50 border-2 border-slate-200 dark:bg-zinc-800 dark:border-gray-500 rounded-lg p-4 mb-6">
                     <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-3">Ajouter un commentaire</h3>
                     <form wire:submit.prevent="addGlobalComment">
                         <div class="mb-3">
@@ -395,7 +395,7 @@
                 <!-- Comments list -->
                 <div class="space-y-4 max-h-96 overflow-y-auto">
                     @forelse($comments as $comment)
-                        <div class="bg-slate-50 border border-slate-200 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4">
+                        <div class="bg-slate-50 border border-slate-200 dark:bg-zinc-800 dark:border-gray-600 rounded-lg p-4">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="font-semibold text-slate-800 dark:text-white">{{ $comment->user->name }}</span>
                                 <div class="flex items-center space-x-2">

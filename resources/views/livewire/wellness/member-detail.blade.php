@@ -1,12 +1,12 @@
 <div>
-    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white bg-slate-100 dark:bg-transparent">
+    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white dark:bg-transparent">
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-slate-800 dark:text-white">{{ $member->name }}</h1>
                 <p class="text-slate-600 dark:text-gray-400 mt-2">{{ $team->name }}</p>
             </div>
             <a href="{{ route('wellness.followup.team', $team->id) }}"
-               class="bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
+               class="bg-slate-200 dark:bg-zinc-900 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -14,7 +14,7 @@
             </a>
         </div>
 
-        <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 mb-6">
+        <div class="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 mb-6">
             <div class="flex flex-wrap items-end gap-3">
                 <div>
                     <label for="date-from" class="text-sm font-medium text-slate-700 dark:text-gray-300 mb-2 block">Du</label>
@@ -36,7 +36,7 @@
 
     <div class="grid md:grid-cols-2 gap-6">
         @foreach (['sleep'=>'Sommeil 😴','stress'=>'Stress 🧠','soreness'=>'Courbatures 💪','energy'=>'Énergie ⚡️'] as $metric => $title)
-            <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 overflow-x-auto">
+            <div class="bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 overflow-x-auto">
                 <div class="text-lg font-semibold text-slate-800 dark:text-white mb-4">{{ $title }}</div>
                 <div class="w-full min-w-[400px]">
                     <canvas id="detail-{{ $metric }}" height="260" class="!w-full"></canvas>

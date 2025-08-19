@@ -1,10 +1,10 @@
 <div>
-    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white bg-slate-100 dark:bg-transparent">
+    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white dark:bg-transparent">
         <h1 class="text-3xl font-bold text-slate-800 dark:text-white mb-6">Suivi météo — Mes équipes</h1>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($teams as $team)
                 <a href="{{ route('wellness.followup.team', $team['id']) }}"
-                   class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
+                   class="bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
                     <div class="text-xl font-semibold text-slate-800 dark:text-white">{{ $team['name'] }}</div>
                     <div class="text-sm text-slate-600 dark:text-gray-400 mt-2">ID: {{ $team['id'] }}</div>
                     <div class="mt-4 text-slate-700 dark:text-white text-sm flex items-center space-x-2">

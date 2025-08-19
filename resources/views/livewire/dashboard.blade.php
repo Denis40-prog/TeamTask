@@ -1,5 +1,5 @@
 <div>
-    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white bg-slate-100 dark:bg-transparent">
+    <div class="container mx-auto px-4 py-8 text-slate-800 dark:text-white dark:bg-transparent">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
@@ -8,7 +8,7 @@
             </div>
             <button
                 wire:click="toggleCreateForm"
-                class="bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
+                class="bg-slate-200 dark:bg-zinc-900 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg cursor-pointer">
                 {{ $showCreateForm ? 'Annuler' : 'Nouvelle équipe' }}
             </button>
         </div>
@@ -17,7 +17,7 @@
 
         <!-- Create Team Form -->
         @if($showCreateForm)
-            <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 mb-8">
+            <div class="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 mb-8">
                 <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-4">Créer une nouvelle équipe</h3>
                 <form wire:submit.prevent="createTeam">
                     <div class="mb-4">
@@ -28,7 +28,7 @@
                             type="text"
                             id="newTeamName"
                             wire:model="newTeamName"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Entrez le nom de l'équipe"
                             required>
                         @error('newTeamName')
@@ -42,7 +42,7 @@
                         <textarea
                             id="newTeamDescription"
                             wire:model="newTeamDescription"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Décrivez l'équipe et ses objectifs"
                             rows="3"></textarea>
                         @error('newTeamDescription')
@@ -52,7 +52,7 @@
                     <div class="flex gap-3">
                         <button
                             type="submit"
-                            class="bg-emerald-600 dark:bg-blue-600 hover:bg-emerald-700 dark:hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
+                            class="bg-emerald-600 dark:bg-green-600 hover:bg-emerald-700 dark:hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
                             Créer l'équipe
                         </button>
                         <button
@@ -69,7 +69,7 @@
         <!-- Teams Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($teams as $team)
-                <div class="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
+                <div class="bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-gray-600 rounded-lg p-6 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200 shadow-lg">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-semibold text-slate-800 dark:text-white cursor-pointer"
                             onclick="window.location.href='/projects/{{ $team->id }}'">
