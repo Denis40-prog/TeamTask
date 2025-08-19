@@ -37,7 +37,7 @@
                     <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Liste des membres</h2>
                     <ul class="mb-4">
                         @foreach($team->users as $member)
-                            <li class="flex items-center justify-between bg-slate-100 dark:bg-gray-700 p-2 rounded mb-2">
+                            <li class="flex items-center justify-between bg-slate-100 dark:bg-zinc-800 p-2 rounded mb-2">
                             <span>
                                 {{ $member->name }} ({{ $member->email }})
                                 <span class="text-xs text-slate-500 dark:text-gray-400 italic ml-2">
@@ -84,7 +84,7 @@
                                     type="email"
                                     wire:model="newMemberEmail"
                                     placeholder="Email du membre à ajouter"
-                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                                    class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                                 >
                                 <button
                                     wire:click="addMember"
@@ -127,7 +127,7 @@
                             type="text"
                             id="newProjectName"
                             wire:model="newProjectName"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Entrez le nom du projet"
                             required>
                         @error('newProjectName')
@@ -142,7 +142,7 @@
                             id="newProjectDescription"
                             wire:model="newProjectDescription"
                             rows="3"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Décrivez le projet..."></textarea>
                         @error('newProjectDescription')
                             <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
@@ -157,7 +157,7 @@
                                 type="date"
                                 id="newProjectStartDate"
                                 wire:model="newProjectStartDate"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                                class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             @error('newProjectStartDate')
                                 <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
                             @enderror
@@ -170,7 +170,7 @@
                                 type="date"
                                 id="newProjectEndDate"
                                 wire:model="newProjectEndDate"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                                class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             @error('newProjectEndDate')
                                 <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span>
                             @enderror
@@ -183,7 +183,7 @@
                         <select
                             id="newProjectStatus"
                             wire:model="newProjectStatus"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500">
                             <option value="active">Actif</option>
                             <option value="archived">Archivé</option>
                         </select>

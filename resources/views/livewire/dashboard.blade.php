@@ -28,7 +28,7 @@
                             type="text"
                             id="newTeamName"
                             wire:model="newTeamName"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Entrez le nom de l'équipe"
                             required>
                         @error('newTeamName')
@@ -42,7 +42,7 @@
                         <textarea
                             id="newTeamDescription"
                             wire:model="newTeamDescription"
-                            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 focus:outline-none focus:border-emerald-500 dark:focus:border-blue-500"
                             placeholder="Décrivez l'équipe et ses objectifs"
                             rows="3"></textarea>
                         @error('newTeamDescription')
