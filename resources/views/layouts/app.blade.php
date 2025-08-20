@@ -22,6 +22,8 @@
         @yield('content')
     </main>
 
+    <livewire:ui.flash-message />
+
     @livewireScripts
 </body>
 </html>

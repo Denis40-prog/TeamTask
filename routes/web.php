@@ -33,6 +33,11 @@ use App\Livewire\{
     WellnessSurveyComponent
 };
 
+use App\Livewire\Wellness\TeamsList;
+use App\Livewire\Wellness\TeamDashboard;
+use App\Livewire\Wellness\MemberDetail;
+use Illuminate\Support\Facades\Gate;
+
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
@@ -62,6 +67,34 @@ Route::middleware(['auth'])->group(function () {
     // Routes principales Livewire
     Route::get('/projects/{teamId}', ProjectComponent::class)->name('projects.index');
     Route::get('/projects/{projectId}/tasks', TaskComponent::class)->name('projects.tasks');
+});
+
+// wellness survey (formulaire membre)
+Route::middleware(['auth', 'verified', 'team.member'])
+    ->get('/wellness', WellnessSurveyComponent::class)
+    ->name('wellness.survey');
+
+// suivi admin
+Route::middleware(['auth','verified'])->group(function () {
+    // Liste des équipes (admin)
+    Route::get('/wellness/suivi', TeamsList::class)
+        ->middleware('can:viewWellness')
+        ->name('wellness.followup');
+
+    // Dashboard d'une équipe
+    Route::get('/wellness/suivi/team/{team}', TeamDashboard::class)
+        ->middleware('can:viewWellnessForTeam,team')
+        ->name('wellness.followup.team');
+
+    // Détails d'un membre
+    Route::get('/wellness/suivi/team/{team}/member/{user}', MemberDetail::class)
+        ->middleware('can:viewWellnessForTeam,team')
+        ->name('wellness.followup.team.member');
+
+    // Administration des utilisateurs (réservé aux admins du site)
+    Route::get('/admin/users', \App\Livewire\Admin\UserManagement::class)
+        ->middleware('can:manageUsers')
+        ->name('admin.users');
 });
 
 require __DIR__.'/auth.php';

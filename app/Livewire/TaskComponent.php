@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Comment;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskComponent extends Component
 {
@@ -34,18 +35,18 @@ class TaskComponent extends Component
     public $filterAssignee = 'all';
     public $filterDateFrom = null;
     public $filterDateTo = null;
-
     // Tri
-    public $sortField = 'created_at'; // 'created_at' | 'priority'
-    public $sortDir = 'desc'; // 'asc' | 'desc'
+    public $sortField = 'created_at';
+    public $sortDir = 'desc';
 
     public function mount($projectId)
     {
         $this->projectId = $projectId;
         $this->project = Project::with('team')->findOrFail($projectId);
 
-        // Vérifier que l'utilisateur fait partie de l'équipe
-        if (!$this->project->team->users->contains(Auth::id())) {
+        // Vérifier l'accès : admin du site OU membre de l'équipe
+        $user = Auth::user();
+        if ($user->role !== 'admin' && !$this->project->team->users->contains(Auth::id())) {
             abort(403, 'Vous n\'avez pas accès à ce projet.');
         }
     }
@@ -85,7 +86,8 @@ class TaskComponent extends Component
         }
 
         $this->reset(['newTaskTitle', 'newTaskDescription', 'newTaskPriority', 'newTaskDueDate', 'selectedAssignees', 'showCreateTaskForm']);
-        session()->flash('message', 'Tâche créée avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Tâche créée avec succès !');
     }
 
     public function startEditing($taskId)
@@ -113,7 +115,8 @@ class TaskComponent extends Component
         ]);
 
         $this->reset(['editingTaskId', 'editTaskTitle', 'editTaskDescription', 'editTaskStatus']);
-        session()->flash('message', 'Tâche mise à jour avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Tâche mise à jour avec succès !');
     }
 
     public function cancelEditing()
@@ -121,35 +124,21 @@ class TaskComponent extends Component
         $this->reset(['editingTaskId', 'editTaskTitle', 'editTaskDescription', 'editTaskStatus']);
     }
 
-    public function addComment()
+    public function addGlobalComment()
     {
         $this->validate([
             'newComment' => 'required|string|max:1000',
         ]);
 
-        // Créer un commentaire général pour le projet (associé à la première tâche ou créer une tâche système)
-        $firstTask = Task::where('project_id', $this->projectId)->first();
-
-        if (!$firstTask) {
-            // S'il n'y a pas de tâches, créer une tâche système pour les commentaires généraux
-            $firstTask = Task::create([
-                'title' => 'Commentaires généraux',
-                'description' => 'Tâche système pour les commentaires généraux du projet',
-                'project_id' => $this->projectId,
-                'assigned_user_id' => Auth::id(),
-                'status' => 'completed',
-                'created_by' => Auth::id(),
-            ]);
-        }
-
         Comment::create([
             'content' => $this->newComment,
-            'task_id' => $firstTask->id,
+            'project_id' => $this->projectId,
             'user_id' => Auth::id(),
         ]);
 
         $this->reset(['newComment']);
-        session()->flash('message', 'Commentaire ajouté avec succès !');
+
+        $this->dispatch('flash', type: 'success', text: 'Commentaire ajouté avec succès !');
     }
 
     public function setSort($field)
@@ -158,7 +147,7 @@ class TaskComponent extends Component
             $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';
         } else {
             $this->sortField = $field;
-            $this->sortDir = $field === 'priority' ? 'desc' : 'desc';
+            $this->sortDir = 'desc';
         }
     }
 
@@ -170,6 +159,39 @@ class TaskComponent extends Component
         $this->filterDateTo   = null;
         $this->sortField      = 'created_at';
         $this->sortDir        = 'desc';
+    }
+
+    public function deleteTask(Task $task)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteTask', $task)) {
+            $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer cette tâche.');
+            return;
+        }
+
+        try {
+            $taskTitle = $task->title;
+            $task->delete();
+            $this->dispatch('flash', type: 'success', text: 'La tâche "' . $taskTitle . '" a été supprimée avec succès.');
+        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression de la tâche.');
+        }
+    }
+
+    public function deleteComment(Comment $comment)
+    {
+        // Vérifier les permissions
+        if (!Gate::allows('deleteComment', $comment)) {
+            $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer ce commentaire.');
+            return;
+        }
+
+        try {
+            $comment->delete();
+            $this->dispatch('flash', type: 'success', text: 'Le commentaire a été supprimé avec succès.');
+        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression du commentaire.');
+        }
     }
 
     public function render()
@@ -215,8 +237,8 @@ class TaskComponent extends Component
         $tasks = $query->get();
 
         // Commentaires
-        $taskIds = $tasks->pluck('id');
-        $comments = Comment::whereIn('task_id', $taskIds)
+        $comments = Comment::where('project_id', $this->projectId)
+            ->whereNull('task_id')
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->get();

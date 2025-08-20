@@ -29,10 +29,5 @@ class DatabaseSeeder extends Seeder
             ChallengeParticipantSeeder::class,
             WellnessSurveySeeder::class,
         ]);
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
     }
 }

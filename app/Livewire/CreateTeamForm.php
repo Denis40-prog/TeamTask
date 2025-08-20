@@ -26,20 +26,20 @@ class CreateTeamForm extends Component
             'owner_id' => Auth::id(),
         ]);
 
-        // table link
-        $team->users()->attach(auth()->id(), ['role' => 'owner']);
+        // table link - Le créateur devient automatiquement admin de l'équipe
+        $team->users()->attach(Auth::id(), ['role' => 'admin']);
 
         Notification::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => 'Vous avez créé l’équipe « ' . $team->name . ' »',
         ]);
-
-        session()->flash('success', 'Équipe créée avec succès.');
 
         $this->reset(['name', 'description', 'showForm']);
 
         $this->dispatch('teamCreated');
         $this->dispatch('notificationCreated');
+
+        $this->dispatch('flash', type: 'success', text: 'Équipe créée avec succès !');
     }
 
     public function render()

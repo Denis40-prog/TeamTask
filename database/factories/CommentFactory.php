@@ -16,12 +16,27 @@ class CommentFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'content' => $this->faker->paragraph(),
-            'task_id' => \App\Models\Task::factory(),
-            'user_id' => \App\Models\User::factory(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
+        // Créer aléatoirement soit un commentaire de tâche soit un commentaire de projet
+        $isTaskComment = $this->faker->boolean(70); // 70% de chance d'être un commentaire de tâche
+
+        if ($isTaskComment) {
+            return [
+                'content' => $this->faker->paragraph(),
+                'task_id' => \App\Models\Task::inRandomOrder()->first()?->id ?? \App\Models\Task::factory(),
+                'project_id' => null,
+                'user_id' => \App\Models\User::inRandomOrder()->first()?->id ?? \App\Models\User::factory(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        } else {
+            return [
+                'content' => $this->faker->paragraph(),
+                'task_id' => null,
+                'project_id' => \App\Models\Project::inRandomOrder()->first()?->id ?? \App\Models\Project::factory(),
+                'user_id' => \App\Models\User::inRandomOrder()->first()?->id ?? \App\Models\User::factory(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
     }
 }

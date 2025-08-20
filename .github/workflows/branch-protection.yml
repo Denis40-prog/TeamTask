@@ -1,0 +1,31 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR comes from develop branch
+        run: |
+          if [ "${{ github.head_ref }}" != "develop" ]; then
+            echo "❌ Error: Pull requests to 'main' must come from 'develop' branch"
+            echo "Current source branch: ${{ github.head_ref }}"
+            echo "Expected source branch: develop"
+            echo ""
+            echo "Please:"
+            echo "1. Merge your changes into 'develop' first"
+            echo "2. Then create a PR from 'develop' to 'main'"
+            exit 1
+          else
+            echo "✅ Success: PR correctly comes from 'develop' branch"
+          fi
+
+      - name: Success message
+        if: success()
+        run: |
+          echo "🎉 Branch protection check passed!"
+          echo "This PR from 'develop' to 'main' is allowed to proceed."
