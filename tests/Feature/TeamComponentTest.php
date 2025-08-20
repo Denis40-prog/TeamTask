@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\TeamComponent;
+use App\Livewire\Dashboard;
 use App\Models\User;
 use App\Models\Team;
 use Livewire\Livewire;
@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 /**
  * Crée une team et attache $user avec un rôle.
  */
-function attachMember(Team $team, User $user, string $role = 'member'): void
+function attachMember(Team $team, User $user, string $role = 'user'): void
 {
     $team->users()->attach($user->id, ['role' => $role]);
 }
@@ -39,8 +39,8 @@ function makeTeamsFor(User $user, int $count, string $prefix = 'Team'): \Illumin
 // --------------------------------------------------
 
 it('n’affiche que les équipes dont l’utilisateur est membre', function () {
-    $me = User::factory()->create();
-    $otherUser = User::factory()->create();
+    $me = User::factory()->create(['role' => 'user']);
+    $otherUser = User::factory()->create(['role' => 'user']);
 
     $myTeam = Team::factory()->create(['name' => 'Ma Team']);
     attachMember($myTeam, $me);
@@ -50,15 +50,15 @@ it('n’affiche que les équipes dont l’utilisateur est membre', function () {
 
     $this->actingAs($me);
 
-    Livewire::test(TeamComponent::class)
+    Livewire::test(Dashboard::class)
         ->assertStatus(200)
         ->assertSee('Ma Team')
         ->assertDontSee('Team étrangère');
 });
 
 it('recherche par nom et description, sans sortir du scope utilisateur', function () {
-    $me = User::factory()->create();
-    $other = User::factory()->create();
+    $me = User::factory()->create(['role' => 'user']);
+    $other = User::factory()->create(['role' => 'user']);
 
     // Ma team avec description distinctive
     $mine = Team::factory()->create(['name' => 'Rocket Team', 'description' => 'fusée bleu électrique']);
@@ -70,7 +70,7 @@ it('recherche par nom et description, sans sortir du scope utilisateur', functio
 
     $this->actingAs($me);
 
-    Livewire::test(TeamComponent::class)
+    Livewire::test(Dashboard::class)
         ->set('search', 'fusée bleu')
         ->assertSee('Rocket Team')
         ->assertDontSee('Foreign');
@@ -81,7 +81,7 @@ it('réinitialise la pagination quand la recherche change', function () {
     makeTeamsFor($me, 25, 'P'); // P 1..P 25
     $this->actingAs($me);
 
-    Livewire::test(\App\Livewire\TeamComponent::class)
+    Livewire::test(\App\Livewire\Dashboard::class)
         // Page 2
         ->call('gotoPage', 2)
         ->assertSee('P 19')     // en page 2
@@ -104,7 +104,7 @@ it('tri par défaut par nom asc et bascule asc/desc sur le même champ', functio
 
     $this->actingAs($me);
 
-    Livewire::test(TeamComponent::class)
+    Livewire::test(Dashboard::class)
         ->assertSeeInOrder(['Alpha', 'Bravo', 'Charlie'])
 
         // Clique sur le même champ -> bascule en desc
@@ -119,7 +119,7 @@ it('changer de champ de tri le remet en asc et reset la pagination', function ()
     makeTeamsFor($me, 12, 'T'); // T 1..T 12
     $this->actingAs($me);
 
-    Livewire::test(\App\Livewire\TeamComponent::class)
+    Livewire::test(\App\Livewire\Dashboard::class)
         // Page 2 (tri par défaut: name ASC -> T 8, T 9)
         ->call('gotoPage', 2)
         ->assertSee('T 8')
@@ -142,7 +142,7 @@ it('pagine par 10 et inclut les compteurs users/projects', function () {
     makeTeamsFor($me, 12, 'Paginate');
     $this->actingAs($me);
 
-    Livewire::test(\App\Livewire\TeamComponent::class)
+    Livewire::test(\App\Livewire\Dashboard::class)
         ->assertViewHas('teams', function ($paginator) {
             return $paginator instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator
                 && $paginator->count() === 10;
@@ -166,7 +166,7 @@ it('respecte la recherche combinée au tri', function () {
 
     $this->actingAs($me);
 
-    Livewire::test(TeamComponent::class)
+    Livewire::test(Dashboard::class)
         ->set('search', 'Omega')
         ->assertSee('Omega')
         ->assertSee('Alpha Omega')

@@ -6,22 +6,37 @@ use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class Dashboard extends Component
 {
-    public $showCreateForm = false;
-    public $newTeamName = '';
-    public $newTeamDescription = '';
+    use WithPagination;
 
-    public function toggleCreateForm()
+    // Création d'équipe
+    public bool $showCreateForm = false;
+    public string $newTeamName = '';
+    public string $newTeamDescription = '';
+
+    // Liste / filtre / tri
+    public string $search = '';
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'sortBy' => ['except' => 'name'],
+        'sortDirection' => ['except' => 'asc'],
+    ];
+
+    public function toggleCreateForm(): void
     {
-        $this->showCreateForm = !$this->showCreateForm;
+        $this->showCreateForm = ! $this->showCreateForm;
         $this->reset(['newTeamName', 'newTeamDescription']);
     }
 
-    public function createTeam()
+    public function createTeam(): void
     {
         $this->validate([
             'newTeamName' => 'required|string|max:255',
@@ -34,11 +49,11 @@ class Dashboard extends Component
             'owner_id' => Auth::id(),
         ]);
 
-        // Ajouter l'utilisateur à l'équipe
+        // Ajouter l'utilisateur créateur comme admin de l'équipe
         TeamUser::create([
             'team_id' => $team->id,
             'user_id' => Auth::id(),
-            'role' => 'admin',
+            'role'    => 'admin', // rôle pivot: 'admin' | 'user' | 'rh'
         ]);
 
         $this->reset(['newTeamName', 'newTeamDescription', 'showCreateForm']);
@@ -46,10 +61,9 @@ class Dashboard extends Component
         $this->dispatch('flash', type: 'success', text: 'Équipe créée avec succès !');
     }
 
-    public function deleteTeam(Team $team)
+    public function deleteTeam(Team $team): void
     {
-        // Vérifier les permissions
-        if (!Gate::allows('deleteTeam', $team)) {
+        if (! Gate::allows('deleteTeam', $team)) {
             $this->dispatch('flash', type: 'error', text: 'Vous n\'avez pas les permissions pour supprimer cette équipe.');
             return;
         }
@@ -57,9 +71,34 @@ class Dashboard extends Component
         try {
             $teamName = $team->name;
             $team->delete();
-            $this->dispatch('flash', type: 'success', text: 'L\'équipe "' . $teamName . '" a été supprimée avec succès.');
-        } catch (\Exception $e) {
+            $this->dispatch('flash', type: 'success', text: 'L\'équipe "'.$teamName.'" a été supprimée avec succès.');
+        } catch (\Throwable $e) {
             $this->dispatch('flash', type: 'error', text: 'Une erreur est survenue lors de la suppression de l\'équipe.');
+        }
+    }
+
+    /* --------- Comportements liste --------- */
+
+    // Reset pagination quand la recherche change
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    // Toggle tri / reset page quand on change de champ
+    public function sortBy(string $field): void
+    {
+        $allowed = ['name', 'created_at'];
+        if (! in_array($field, $allowed, true)) {
+            $field = 'name';
+        }
+
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+            $this->resetPage();
         }
     }
 
@@ -67,16 +106,38 @@ class Dashboard extends Component
     {
         $user = Auth::user();
 
-        // Si c'est l'admin du site, il voit toutes les équipes
-        if ($user->role === User::ROLE_ADMIN) {
-            $teams = Team::all();
-        } else {
-            // Sinon, seulement ses équipes
-            $teams = $user->teams;
+        // Base query
+        $query = Team::query()->select('teams.*');
+
+        // Scope d'appartenance: si pas admin site, ne montrer que les équipes dont il est membre
+        if ($user->role !== User::ROLE_ADMIN) {
+            $query->whereHas('users', fn ($q) => $q->where('users.id', $user->id));
         }
 
+        // Recherche (reste dans le scope ci-dessus)
+        if (filled($this->search)) {
+            $s = '%' . str_replace('%', '\%', $this->search) . '%';
+            $query->where(function ($q) use ($s) {
+                $q->where('teams.name', 'like', $s)
+                  ->orWhere('teams.description', 'like', $s);
+            });
+        }
+
+        // Compteurs attendus par l'UI
+        $query->withCount(['users', 'projects']);
+
+        // Tri sécurisé (qualifier)
+        $allowed = ['name', 'created_at'];
+        if (! in_array($this->sortBy, $allowed, true)) {
+            $this->sortBy = 'name';
+        }
+        $query->orderBy('teams.' . $this->sortBy, $this->sortDirection);
+
+        // Pagination
+        $teams = $query->paginate(10);
+
         return view('livewire.dashboard', [
-            'teams' => $teams
+            'teams' => $teams,
         ]);
     }
 }
