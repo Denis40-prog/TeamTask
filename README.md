@@ -32,7 +32,7 @@
   - Tri par date de création ou priorité
 
 ### 💬 Gestion des commentaires
-- Ajout de commentaires sur un projet (associés à une tâche système si nécessaire)
+- Ajout de commentaires sur un projet
 - Affichage des commentaires récents avec auteur et date
 
 ### 🌤️ Météo des émotions
@@ -70,8 +70,8 @@
 
 ### 1. Cloner le dépôt
 ```bash
-git clone https://github.com/<user>/<repo>.git
-cd <repo>
+git clone https://github.com/Denis40-prog/TeamTask.git
+cd TeamTask
 ```
 
 ---
@@ -93,17 +93,17 @@ Configurer la connexion à la base de données dans .env.
 
 ---
 
-### 4. Lancer les migrations et seeders
+### 4. Lancer le serveur
 ```bash
-sail artisan migrate --seed
+sail up
+sail npm run dev
 ```
 
 ---
 
-### 5. Lancer le serveur
+### 5. Lancer les migrations et seeders
 ```bash
-sail up
-sail npm run dev
+sail artisan migrate --seed
 ```
 
 ---
@@ -121,9 +121,6 @@ sail npm run dev
 ## Système de notifications :
 - Internes (UI)
 - Base technique pour notifications email
-- Tests unitaires et fonctionnels
-- Documentation technique & utilisateur complète
-- Mise en production
 
 ## Mise en concurrence hebdomadaire
 - Challenge sous forme de mission hebdomadaire 
