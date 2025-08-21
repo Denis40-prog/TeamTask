@@ -119,7 +119,7 @@ class ProjectComponent extends Component
             return;
         }
 
-        $this->team->users()->attach($user, ['role' => 'member']);
+        $this->team->users()->attach($user, ['role' => 'user']);
         $this->newMemberEmail = '';
         $this->team->refresh();
 
@@ -166,7 +166,7 @@ class ProjectComponent extends Component
             return;
         }
 
-        $this->team->users()->updateExistingPivot($userId, ['role' => 'member']);
+        $this->team->users()->updateExistingPivot($userId, ['role' => 'user']);
         $this->team->refresh();
 
         $user = User::find($userId);

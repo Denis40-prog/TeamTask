@@ -13,21 +13,25 @@ uses(RefreshDatabase::class);
 // --- Helpers ---------------------------------------------------------------
 
 /**
- * Crée une team, un user courant (admin ou membre), et attache les membres fournis.
- * @return array [team, currentUser, others(array)]
+ * Crée une team, un user courant (avec rôle site + rôle pivot équipe), et attache des membres "simples".
+ *
+ * @param string $teamRole   Rôle du user courant dans la team: 'admin' | 'user' | 'rh'
+ * @param string $siteRole   Rôle site du user courant: 'admin' | 'user'
+ * @param int    $others     Nombre d'autres membres à ajouter (en pivot 'user')
+ * @return array [Team $team, User $current, array $othersArr]
  */
-function bootTeam(bool $asAdmin = true, int $others = 0): array
+function bootTeam(string $teamRole = 'admin', string $siteRole = 'user', int $others = 0): array
 {
     $team = Team::factory()->create();
-    $current = User::factory()->create();
+    $current = User::factory()->create(['role' => $siteRole]); // rôle site
 
-    // Pivot role
-    $team->users()->attach($current->id, ['role' => $asAdmin ? 'admin' : 'member']);
+    // Attach courant avec rôle pivot équipe (nouvelle logique: 'admin' | 'user' | 'rh')
+    $team->users()->attach($current->id, ['role' => $teamRole]);
 
     $othersArr = [];
     for ($i = 0; $i < $others; $i++) {
-        $u = User::factory()->create();
-        $team->users()->attach($u->id, ['role' => 'member']);
+        $u = User::factory()->create(['role' => 'user']); // rôle site user par défaut
+        $team->users()->attach($u->id, ['role' => 'user']); // pivot user par défaut
         $othersArr[] = $u;
     }
 
@@ -37,7 +41,8 @@ function bootTeam(bool $asAdmin = true, int $others = 0): array
 // --- Tests -----------------------------------------------------------------
 
 it('affiche les projets de la team et calcule isAdmin', function () {
-    [$team, $admin] = bootTeam(asAdmin: true);
+    // user courant = pivot admin dans la team
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user');
 
     // 2 projets visibles pour la team
     Project::factory()->count(2)->create([
@@ -60,8 +65,10 @@ it('affiche les projets de la team et calcule isAdmin', function () {
 });
 
 it('refuse l’accès si le user ne fait pas partie de la team (403)', function () {
-    [$team] = bootTeam(asAdmin: true);
-    $stranger = User::factory()->create();
+    // Crée une team avec un admin (peu importe), mais on va se connecter avec un "stranger"
+    [$team] = bootTeam(teamRole: 'admin', siteRole: 'user');
+    $stranger = User::factory()->create(['role' => 'user']); // rôle site user, non membre de la team
+
     $this->actingAs($stranger);
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
@@ -69,7 +76,7 @@ it('refuse l’accès si le user ne fait pas partie de la team (403)', function 
 });
 
 it('permet de créer un projet (form + validation + état)', function () {
-    [$team, $admin] = bootTeam(asAdmin: true);
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user');
     $this->actingAs($admin);
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
@@ -80,7 +87,6 @@ it('permet de créer un projet (form + validation + état)', function () {
         ->set('newProjectEndDate', now()->addWeek()->toDateString())
         ->set('newProjectStatus', 'active')
         ->call('createProject')
-        // état réinitialisé
         ->assertSet('showCreateForm', false)
         ->assertSet('newProjectName', '')
         ->assertSet('newProjectDescription', '')
@@ -97,7 +103,7 @@ it('permet de créer un projet (form + validation + état)', function () {
 });
 
 it('valide la création de projet (nom requis, statut dans liste)', function () {
-    [$team, $admin] = bootTeam(asAdmin: true);
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user');
     $this->actingAs($admin);
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
@@ -109,24 +115,23 @@ it('valide la création de projet (nom requis, statut dans liste)', function () 
 });
 
 it('calcule isAdmin=false pour un simple membre et cache les actions admin', function () {
-    [$team, $member, $others] = bootTeam(asAdmin: false, others: 1);
+    // user courant = pivot 'user' (ex "membre simple")
+    [$team, $member, $others] = bootTeam(teamRole: 'user', siteRole: 'user', others: 1);
     $this->actingAs($member);
 
     $other = $others[0];
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
         ->assertSet('isTeamAdmin', false)
-        // On ne voit pas le bouton "Supprimer" des membres
         ->assertDontSee('Supprimer')
-        // On ne voit pas le bouton "Ajouter" (section admin)
         ->assertDontSee('Ajouter');
 });
 
 it('ajoute un membre par email (admin)', function () {
-    [$team, $admin] = bootTeam(asAdmin: true, others: 1);
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user', others: 1);
     $this->actingAs($admin);
 
-    $newUser = User::factory()->create();
+    $newUser = User::factory()->create(['role' => 'user']);
 
     $initialCount = $team->users()->count();
 
@@ -141,12 +146,11 @@ it('ajoute un membre par email (admin)', function () {
 });
 
 it('n’ajoute pas deux fois le même membre et remonte un message', function () {
-    [$team, $admin, $others] = bootTeam(asAdmin: true, others: 1);
+    [$team, $admin, $others] = bootTeam(teamRole: 'admin', siteRole: 'user', others: 1);
     $this->actingAs($admin);
 
     $already = $others[0];
 
-    // Vérifie que l’utilisateur est déjà dans l’équipe
     expect($team->users->pluck('id'))->toContain($already->id);
 
     $initialCount = $team->users()->count();
@@ -154,7 +158,6 @@ it('n’ajoute pas deux fois le même membre et remonte un message', function ()
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
         ->set('newMemberEmail', $already->email)
         ->call('addMember')
-        // pas de plantage, mais pas d’ajout non plus
         ->assertSet('newMemberEmail', '');
 
     $team->refresh();
@@ -162,7 +165,7 @@ it('n’ajoute pas deux fois le même membre et remonte un message', function ()
 });
 
 it('valide l’email lors de l’ajout de membre', function () {
-    [$team, $admin] = bootTeam(asAdmin: true);
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user');
     $this->actingAs($admin);
 
     Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
@@ -177,7 +180,7 @@ it('valide l’email lors de l’ajout de membre', function () {
 });
 
 it('retire un membre (admin)', function () {
-    [$team, $admin, $others] = bootTeam(asAdmin: true, others: 1);
+    [$team, $admin, $others] = bootTeam(teamRole: 'admin', siteRole: 'user', others: 1);
     $this->actingAs($admin);
     $member = $others[0];
 
@@ -191,7 +194,7 @@ it('retire un membre (admin)', function () {
 });
 
 it('liste uniquement les projets de la team dans la grille', function () {
-    [$team, $admin] = bootTeam(asAdmin: true);
+    [$team, $admin] = bootTeam(teamRole: 'admin', siteRole: 'user');
     $this->actingAs($admin);
 
     $mine = Project::factory()->create(['team_id' => $team->id, 'owner_id' => $admin->id, 'name' => 'Projet A']);
@@ -202,4 +205,12 @@ it('liste uniquement les projets de la team dans la grille', function () {
         ->assertDontSee('Projet B');
 });
 
+it('autorise un site admin même hors équipe', function () {
+    [$team] = bootTeam(teamRole:'admin', siteRole:'user');
+    $super = User::factory()->create(['role' => 'admin']); // site-admin
+    $this->actingAs($super);
+
+    Livewire::test(ProjectComponent::class, ['teamId' => $team->id])
+        ->assertStatus(200);
+});
 
