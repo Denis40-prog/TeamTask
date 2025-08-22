@@ -4,7 +4,7 @@
 [![Laravel](https://img.shields.io/badge/Laravel-10-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
 [![Livewire](https://img.shields.io/badge/Livewire-3-4E56A6?logo=laravel&logoColor=white)](https://livewire.laravel.com/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![MariaDB](https://img.shields.io/badge/MariaDB-10.11-blue?logo=mariadb&logoColor=white)](https://mariadb.org/)
 
 **TeamTask** est une application de gestion de projets et d'équipes développée avec **Laravel** et **Livewire**, permettant aux utilisateurs de collaborer efficacement autour de tâches, commentaires et projets partagés.
 
@@ -51,7 +51,7 @@
 
 - **Backend :** [Laravel 12](https://laravel.com/) + [PHP 8+](https://www.php.net/)
 - **Frontend :** [Livewire](https://livewire.laravel.com/) + [Blade](https://laravel.com/docs/blade) + [Tailwind CSS](https://tailwindcss.com/)
-- **Base de données :** [MySQL](https://www.mysql.com/)
+- **Base de données :** [MariaDB](https://mariadb.org/)
 - **Authentification :** [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze) / [Sanctum](https://laravel.com/docs/sanctum)
 - **Environnement :** Sail (WSL)
 
@@ -109,21 +109,29 @@ sail artisan migrate --seed
 ---
 
 ### 📅 À venir
-## Sidebar dynamique :
+## Gestion avancée des tâches et commentaires :
 - Réponses imbriquées aux commentaires (système de sous-commentaires avec affichage hiérarchique).
+- Possibilité d'identifier quelqu'un, de réagir à un commentaire
+- Possibilité de cliquer sur une tâche pour avoir un menu plus détaillé (sous-tâches par exemple) et permettre des commentaires visibles uniquement dans la tâche ainsi que l'ajout de pièces jointes
+- Gestion des tâches sous forme de tableau pour quelque chose de plus visuel 
+
+## Sidebar dynamique : 
 - Onglet “Activité récente” : suivi chronologique des actions (création/modification de tâches, commentaires, etc.).
+
+## Confort utilisateur :
 - Refonte profil utilisateur : avatar, bio, préférences, meilleure UX pour la gestion du compte.
 
 ## Gestion avancée des équipes :
 - Invitations par lien
 - Meilleure gestion des droits par rôle
+- Renommage des équipes
 
 ## Système de notifications :
 - Internes (UI)
 - Base technique pour notifications email
 
-## Mise en concurrence hebdomadaire
-- Challenge sous forme de mission hebdomadaire 
+## Mise en concurrence ludique hebdomadaire
+- Challenge sous forme de mission hebdomadaire
 
 ---
 
